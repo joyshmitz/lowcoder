@@ -2153,12 +2153,12 @@ __metadata:
   linkType: hard
 
 "@grpc/grpc-js@npm:~1.8.0":
-  version: 1.8.14
-  resolution: "@grpc/grpc-js@npm:1.8.14"
+  version: 1.8.22
+  resolution: "@grpc/grpc-js@npm:1.8.22"
   dependencies:
     "@grpc/proto-loader": ^0.7.0
     "@types/node": ">=12.12.47"
-  checksum: 7b889ae67cde5eb9b4feb92d54e73945d881309b9b879a2dde478fa7850b99835efa7592a8154a0f923851d7a18a177c106f5f52b45061180bb04aef7783c1c9
+  checksum: 4e7be493f568ce7f6d196b28d1177cab2714261c2df61a5900b5cc93e2f61362c780e57d0dae556972375006b72d39a9e0860d5c78bbe5e354a0bddf0d3da121
   languageName: node
   linkType: hard
 
