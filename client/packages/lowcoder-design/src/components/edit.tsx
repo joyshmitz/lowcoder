@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ReactComponent as Edit } from "icons/icon-text-edit.svg";
+import { ReactComponent as Edit } from "icons/v1/icon-text-edit.svg";
 import { CSSProperties, ReactNode, useEffect, useRef, useState } from "react";
 import { Input } from "../components/Input";
 import { InputProps, InputRef } from "antd/es/input";
@@ -53,7 +53,7 @@ export const TextWrapper = styled.div`
   white-space: nowrap;
 `;
 const EditIcon = styled(Edit)`
-  visibility: hidden;
+  // visibility: hidden;
   margin-left: 8px;
   flex-shrink: 0;
 `;
@@ -68,7 +68,7 @@ const TextInput = styled(Input)<InputProps & { $hasPrefix?: boolean }>`
   border: none;
   padding: 0 8px 0 4px;
   padding-left: ${(props) => (props.$hasPrefix ? "28px" : "4px")};
-  color: #ffffff;
+  color: #444444;
   line-height: 28px;
   font-size: 14px;
 
@@ -130,13 +130,15 @@ export const EditText = (props: EditTextProps) => {
           <TextWrapper className={"taco-edit-text-body"} title={props.text}>
             {props.text}
           </TextWrapper>
-          <EditIcon
-            onClick={(e) => {
-              e.stopPropagation();
-              !props.disabled && setEditing(true);
-            }}
-            className={"taco-edit-text-icon"}
-          />
+          {props.forceClickIcon && !props.disabled && (
+            <EditIcon
+              onClick={(e) => {
+                e.stopPropagation();
+                !props.disabled && setEditing(true);
+              }}
+              className={"taco-edit-text-icon"}
+            />
+          )}
         </EditTextWrapper>
       )}
       {props.prefixIcon && <Prefix>{props.prefixIcon}</Prefix>}

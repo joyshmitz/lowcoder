@@ -23,7 +23,7 @@ import {
   databasePlugins,
 } from "@lowcoder-ee/constants/datasourceConstants";
 import { QueryContext } from "util/context/QueryContext";
-import { messageInstance } from "lowcoder-design";
+import { messageInstance } from "lowcoder-design/src/components/GlobalInstances";
 
 const { Option } = Select;
 
@@ -39,7 +39,7 @@ const SelectOptionContains = styled.div`
   align-items: center;
   width: 99%;
 `;
-const SelectOption = styled((props: OptionProps) => <Option {...props} />)`
+const SelectOption = styled(Option)`
   display: flex;
   justify-content: space-between;
 

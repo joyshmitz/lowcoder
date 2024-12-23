@@ -8,38 +8,44 @@ import { refMethods } from "comps/generators/withMethodExposing";
 import { blurMethod, clickMethod, focusWithOptions } from "comps/utils/methodUtils";
 
 export function getButtonStyle(buttonStyle: ButtonStyleType) {
-  const hoverColor = genHoverColor(buttonStyle.background);
-  const activeColor = genActiveColor(buttonStyle.background);
+  const hoverColor = buttonStyle.background && genHoverColor(buttonStyle.background);
+  const activeColor = buttonStyle.background && genActiveColor(buttonStyle.background);
   return css`
     &&& {
       border-radius: ${buttonStyle.radius};
-      margin: ${buttonStyle.margin};	
+      border-width:${buttonStyle.borderWidth};
+      margin: ${buttonStyle.margin};
       padding: ${buttonStyle.padding};
+      rotate: ${buttonStyle.rotation&&buttonStyle.rotation};
       &:not(:disabled) {
-        // click animation color
         --antd-wave-shadow-color: ${buttonStyle.border};
         border-color: ${buttonStyle.border};
         color: ${buttonStyle.text};
-        background-color: ${buttonStyle.background};
+        font-size: ${buttonStyle.textSize};
+        font-weight: ${buttonStyle.textWeight};
+        font-family: ${buttonStyle.fontFamily};
+        font-style: ${buttonStyle.fontStyle};
+        text-transform:${buttonStyle.textTransform};
+        text-decoration:${buttonStyle.textDecoration};
+        background: ${buttonStyle.background};
         border-radius: ${buttonStyle.radius};
-        margin: ${buttonStyle.margin};	
+        margin: ${buttonStyle.margin};
         padding: ${buttonStyle.padding};
-  
-        :hover,
-        :focus {
+
+        &:hover,
+        &:focus {
           color: ${buttonStyle.text};
           background-color: ${hoverColor};
           border-color: ${buttonStyle.border === buttonStyle.background
             ? hoverColor
-            : buttonStyle.border};
+            : buttonStyle.border} !important;
         }
-  
-        :active {
+        &:active {
           color: ${buttonStyle.text};
           background-color: ${activeColor};
           border-color: ${buttonStyle.border === buttonStyle.background
             ? activeColor
-            : buttonStyle.border};
+            : buttonStyle.border} !important;
         }
       }
     }
@@ -54,17 +60,20 @@ export const Button100 = styled(Button)<{ $buttonStyle?: ButtonStyleType }>`
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  gap: 6px; 
   span {
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  gap: 6px;
+  line-height:${(props) => props.$buttonStyle?.lineHeight}; 
 `;
 
-export const ButtonCompWrapper = styled.div<{ disabled: boolean }>`
+export const ButtonCompWrapper = styled.div<{ $disabled: boolean }>`
+  display: flex;
+
   // The button component is disabled but can respond to drag & select events
   ${(props) =>
-    props.disabled &&
+    props.$disabled &&
     `
     cursor: not-allowed;
     button:disabled {
@@ -91,7 +100,7 @@ function fixOldData(oldData: any) {
   }
   return oldData;
 }
-const ButtonTmpStyleControl = styleControl(ButtonStyle);
+const ButtonTmpStyleControl = styleControl(ButtonStyle, 'style');
 export const ButtonStyleControl = migrateOldData(ButtonTmpStyleControl, fixOldData);
 
 export const buttonRefMethods = refMethods<HTMLElement>([

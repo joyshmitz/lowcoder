@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import { default as AntdBreadcrumb } from "antd/es/breadcrumb";
 import { default as Select } from "antd/es/select";
 import { default as Skeleton } from "antd/es/skeleton";
+import { Card } from "antd";
 import React, { useEffect, useState } from "react";
 import {
   ArrowIcon,
@@ -21,17 +22,20 @@ import { canEditApp, canManageApp } from "../../util/permissionUtils";
 import { HomeResKey, HomeResTypeEnum, NavigationTypes } from "../../types/homeRes";
 import { HomeResInfo } from "../../util/homeResUtils";
 import { getUser } from "../../redux/selectors/usersSelectors";
-import { useLocation } from "react-use";
+import { useLocation } from "react-router-dom";
 import { TrashTableView } from "./TrashTableView";
 import { HomepageTourV2 } from "../tutorials/HomeTutorialsV2";
 import { HomeCardView } from "./HomeCardView";
-import { getHomeLayout, HomeLayoutType, saveHomeLayout } from "../../util/localStorageUtil";
+import { getHomeLayout, HomeLayoutType, removeCollisionStatus, saveHomeLayout } from "../../util/localStorageUtil";
 import { HomeTableView } from "./HomeTableView";
 import { Layers } from "../../constants/Layers";
 import { CreateDropdown } from "./CreateDropdown";
 import { trans } from "../../i18n";
 import { isFetchingFolderElements } from "../../redux/selectors/folderSelector";
 import { checkIsMobile } from "util/commonUtils";
+import { default as Divider } from "antd/es/divider";
+import { ApplicationCategoriesEnum } from "constants/applicationConstants";
+import { Pagination } from 'antd';
 
 const Wrapper = styled.div`
   display: flex;
@@ -47,7 +51,7 @@ const HeaderWrapper = styled.div`
   padding: 0 36px;
   align-items: center;
   flex-shrink: 0;
-  @media screen and (max-width: 500px) {
+  @media screen and (max-width: 720px) {
     padding: 0 24px;
   }
 `;
@@ -57,11 +61,13 @@ const OperationWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 32px;
+  height: auto;
   padding: 0 36px;
   margin: 8px 0 20px 0;
-  @media screen and (max-width: 500px) {
-    padding: 0 24px;
+  @media screen and (max-width: 850px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
   }
 `;
 
@@ -86,17 +92,9 @@ const Breadcrumb = styled(AntdBreadcrumb)`
     flex-direction: column;
     justify-content: center;
   }
-`;
 
-const OperationRightWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  margin-left: auto;
-  @media screen and (max-width: 500px) {
-    > Button {
-      display: none;
-    }
+  @media screen and (max-width: 720px) {
+    display:none
   }
 `;
 
@@ -151,7 +149,7 @@ const FilterDropdown = styled(Select)`
 
 const FilterMenuItem = styled.div`
   display: flex;
-  align-items: center;
+  align-items: left;
   height: 29px;
   width: 100%;
 `;
@@ -196,14 +194,20 @@ const EmptyView = styled.div`
     }
   }
 `;
+const PaginationLayout = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;  
+`
 
 const LayoutSwitcher = styled.div`
   position: absolute;
-  right: 36px;
-  top: 6px;
+  left: 20px;
+  top: 40px;
   cursor: pointer;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 16px;
   border-radius: 4px;
   z-index: ${Layers.homeLayoutSwitcher};
   display: flex;
@@ -213,9 +217,41 @@ const LayoutSwitcher = styled.div`
   &:hover {
     background-color: #f5f5f6;
   }
+`;
 
-  @media screen and (max-width: 500px) {
-    display: none;
+const HomeView = styled.div`
+  font-size: 14px;
+  color: #8b8fa3;
+  flex-grow: 1;
+  padding-top: 0px;
+  padding-left: 40px;
+  max-width: 95%;
+`;
+
+const StyleHomeCover = styled.div`
+    background: rgb(2,0,36);
+    background: -moz-linear-gradient(121deg, rgba(2,0,36,1) 0%, rgba(23,102,167,1) 42%, rgba(243,130,244,1) 100%);
+    background: -webkit-linear-gradient(121deg, rgba(2,0,36,1) 0%, rgba(23,102,167,1) 42%, rgba(243,130,244,1) 100%);
+    background: linear-gradient(121deg, rgba(2,0,36,1) 0%, rgba(23,102,167,1) 42%, rgba(243,130,244,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#020024",endColorstr="#f382f4",GradientType=1);
+    padding: 25px;
+    height: 120px;
+    border-radius:10px 10px 0 0;
+`;
+
+const SearchWrapper = styled.div`
+  width: auto;
+
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: auto;
+
+  @media screen and (max-width: 980px) {
+    width: 100%;
+    > Button {
+      display: none;
+    }
   }
 `;
 
@@ -232,36 +268,104 @@ export interface HomeRes {
   key: string;
   id: string;
   name: string;
+  title?: string;
+  description?: string;
+  category?: string;
+  icon?: string;
   type: HomeResTypeEnum;
   creator: string;
   lastModifyTime: number;
   isEditable?: boolean;
   isManageable: boolean;
   isDeletable: boolean;
+  isMarketplace?: boolean;
+  isLocalMarketplace?: boolean;
 }
 
 export type HomeBreadcrumbType = { text: string; path: string };
 
-export type HomeLayoutMode = "view" | "trash" | "module" | "folder" | "folders";
+export type HomeLayoutMode = "view" | "trash" | "module" | "folder" | "folders" | "marketplace";
 
 export interface HomeLayoutProps {
   breadcrumb?: HomeBreadcrumbType[];
   elements: Array<ApplicationMeta | FolderMeta>;
+  localMarketplaceApps?: Array<ApplicationMeta>;
+  globalMarketplaceApps?: Array<ApplicationMeta>;
   mode: HomeLayoutMode;
+  setCurrentPage?: any;
+  setPageSize?: any;
+  currentPage?: number;
+  pageSize?: number;
+  total?: number;
+  searchValue?: string;
+  setSearchValue?: any;
+  setTypeFilterPagination?: any;
+  setCategoryFilterPagination?: any;
+  setIsCreated?: any;
+  isCreated?: boolean;
+  setModify?: any;
+  modify?: boolean;
 }
 
 export function HomeLayout(props: HomeLayoutProps) {
-  const { breadcrumb = [], elements = [], mode } = props;
+  const { breadcrumb = [],
+    elements = [],
+    localMarketplaceApps = [],
+    globalMarketplaceApps = [],
+    mode ,
+    setCurrentPage,
+    setPageSize,
+    pageSize,
+    currentPage,
+    searchValue,
+    setSearchValue,
+    total,
+    setTypeFilterPagination,
+    setCategoryFilterPagination,
+    setModify,
+    modify,
+    setIsCreated,
+    isCreated
+
+  } = props;
+
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (current: number, size: number) => {
+    setPageSize(size);
+  };
+
+  const categoryOptions = [
+    { label: <FilterMenuItem>{trans("home.allCategories")}</FilterMenuItem>, value: 'All' },
+    ...Object.entries(ApplicationCategoriesEnum).map(([key, value]) => ({
+      label: (
+        <FilterMenuItem>
+          {value}
+        </FilterMenuItem>
+      ),
+      value: key,
+    })),
+  ];
+
   const user = useSelector(getUser);
   const isFetching = useSelector(isFetchingFolderElements);
-
-  const [filterBy, setFilterBy] = useState<HomeResKey>("All");
-  const [searchValue, setSearchValue] = useState("");
+  const isSelfHost = window.location.host !== 'app.lowcoder.cloud';
+  const [typeFilter, setTypeFilter] = useState<HomeResKey>("All");
+  const [categoryFilter, setCategoryFilter] = useState<ApplicationCategoriesEnum | "All">("All");
+  const [visibility, setVisibility] = useState(mode === "view" || mode === "trash" || mode === "folder");
   const [layout, setLayout] = useState<HomeLayoutType>(
     checkIsMobile(window.innerWidth) ? "card" : getHomeLayout()
   );
 
   useEffect(() => saveHomeLayout(layout), [layout]);
+
+  useEffect(() => {
+    // remove collision status from localstorage, as the next selected app may have another collision status
+    removeCollisionStatus();
+  }, []);
 
   const currentPath = useLocation().pathname;
 
@@ -269,26 +373,54 @@ export function HomeLayout(props: HomeLayoutProps) {
     return null;
   }
 
-  const resList: HomeRes[] = elements
-    .filter((e) =>
-      searchValue
-        ? e.name.toLocaleLowerCase().includes(searchValue) ||
-          e.createBy.toLocaleLowerCase().includes(searchValue)
-        : true
-    )
+  var displayElements = elements.sort((a, b) => {
+    if (a.folder && !b.folder) {
+      return -1;
+    } else if (!a.folder && b.folder) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+
+  if (mode === "marketplace" && isSelfHost) {
+    const markedLocalApps = localMarketplaceApps.map(app => ({ ...app, isLocalMarketplace: true }));
+    const markedGlobalApps = globalMarketplaceApps.map(app => ({ ...app, isLocalMarketplace: false }));
+    // Merge local and global apps into the elements array
+    displayElements = [...markedLocalApps, ...markedGlobalApps];
+  }
+  else if (mode === "marketplace" && !isSelfHost) {
+    const markedLocalApps = localMarketplaceApps.map(app => ({ ...app, isLocalMarketplace: true }));
+    displayElements = [...markedLocalApps];
+  }
+  const resList: HomeRes[] = displayElements
     .filter((e) => {
-      if (HomeResTypeEnum[filterBy].valueOf() === HomeResTypeEnum.All) {
+      if (!visibility) {
+        if (searchValue) {
+          const lowerCaseSearchValue = searchValue.toLocaleLowerCase();
+          return e.name?.toLocaleLowerCase().includes(lowerCaseSearchValue) ||
+              e.createBy?.toLocaleLowerCase().includes(lowerCaseSearchValue);
+        }
         return true;
       }
-      if (e.folder) {
-        return HomeResTypeEnum[filterBy] === HomeResTypeEnum.Folder;
-      } else {
-        if (filterBy === "Navigation") {
-          return NavigationTypes.map((t) => t.valueOf()).includes(e.applicationType);
-        }
-        return HomeResTypeEnum[filterBy].valueOf() === e.applicationType;
-      }
+      return true;
     })
+    .filter((e) => {
+      if(!visibility) {
+        if (HomeResTypeEnum[typeFilter].valueOf() === HomeResTypeEnum.All) {
+          return true;
+        }
+        if (e.folder) {
+          return HomeResTypeEnum[typeFilter] === HomeResTypeEnum.Folder;
+        } else {
+          if (typeFilter === "Navigation") {
+            return NavigationTypes.map((t) => t.valueOf()).includes(e.applicationType);
+          }
+          return HomeResTypeEnum[typeFilter].valueOf() === e.applicationType;
+        }
+      }
+      return true;
+      })
     .map((e) =>
       e.folder
         ? {
@@ -305,12 +437,18 @@ export function HomeLayout(props: HomeLayoutProps) {
             key: e.applicationId,
             id: e.applicationId,
             name: e.name,
+            title: e.title,
+            description: e.description,
+            category: e.category,
+            icon: e.image,
             type: HomeResTypeEnum[HomeResTypeEnum[e.applicationType] as HomeResKey],
-            creator: e.createBy,
+            creator: e?.creatorEmail ?? e.createBy,
             lastModifyTime: e.lastModifyTime,
-            isEditable: canEditApp(user, e),
-            isManageable: canManageApp(user, e),
-            isDeletable: canEditApp(user, e),
+            isEditable: mode !== 'marketplace' && canEditApp(user, e),
+            isManageable: mode !== 'marketplace' && canManageApp(user, e),
+            isDeletable: mode !== 'marketplace' && canEditApp(user, e),
+            isMarketplace: mode === 'marketplace',
+            isLocalMarketplace: e.isLocalMarketplace,
           }
     );
 
@@ -360,77 +498,192 @@ export function HomeLayout(props: HomeLayoutProps) {
       </HeaderWrapper>
 
       {showNewUserGuide(user) && <HomepageTourV2 />}
-      {/*<HomepageTourV2 />*/}
 
-      <OperationWrapper>
-        {mode !== "folders" && mode !== "module" && (
-          <FilterDropdown
-            bordered={false}
-            value={filterBy}
-            onChange={(value) => setFilterBy(value as HomeResKey)}
-            options={[
-              getFilterMenuItem(HomeResTypeEnum.All),
-              getFilterMenuItem(HomeResTypeEnum.Application),
-              getFilterMenuItem(HomeResTypeEnum.Module),
-              getFilterMenuItem(HomeResTypeEnum.Navigation),
-              ...(mode !== "trash" ? [getFilterMenuItem(HomeResTypeEnum.Folder)] : []),
-            ]}
-            getPopupContainer={(node) => node}
-            suffixIcon={<ArrowSolidIcon />}
-          />
-        )}
+        <HomeView>
+          <StyleHomeCover>
+            <h1 style={{color: "#ffffff", marginTop : "12px"}}>
+              {mode === "marketplace" && trans("home.appMarketplace")}
+              {mode === "folders" && trans("home.allFolders")}
+              {mode === "folder" && trans("home.folder")}
+              {mode === "module" && trans("home.modules")}
+              {mode === "trash" && trans("home.trash")}
+              {mode === "view" && trans("home.allApplications")}
+            </h1>
+          </StyleHomeCover>
+          <Card style={{ marginBottom: "20px" }}>
+            
+            <OperationWrapper>
+              {mode !== "folders" && mode !== "module" && (
+                <FilterDropdown
+                  variant="borderless"
+                  value={typeFilter}
+                  onChange={(value: any) => {
+                    setTypeFilter(value as HomeResKey);
+                    if(visibility)
+                      setTypeFilterPagination(HomeResTypeEnum[value])
+                  }
+                  }
+                  options={[
+                    getFilterMenuItem(HomeResTypeEnum.All),
+                    getFilterMenuItem(HomeResTypeEnum.Application),
+                    getFilterMenuItem(HomeResTypeEnum.Module),
+                    ...(mode !== "marketplace" ? [getFilterMenuItem(HomeResTypeEnum.Navigation), getFilterMenuItem(HomeResTypeEnum.MobileTabLayout)] : []),
+                    ...(mode !== "trash" && mode !== "marketplace" && mode !== "folder" ? [getFilterMenuItem(HomeResTypeEnum.Folder)] : []),
+                  ]}
+                  getPopupContainer={(node: any) => node}
+                  suffixIcon={<ArrowSolidIcon />} />
+              )}
+              {(mode === "view" || mode === "folder") &&
+                <FilterDropdown
+                    style={{ minWidth: "220px" }}
+                    variant="borderless"
+                    value={categoryFilter}
+                    onChange={(value: any) => {
+                      setCategoryFilter(value as ApplicationCategoriesEnum)
+                      setCategoryFilterPagination(value as ApplicationCategoriesEnum);
+                      }
 
-        <OperationRightWrapper>
-          <Search
-            placeholder={trans("search")}
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            style={{ width: "192px", height: "32px", margin: "0" }}
-          />
-          {mode !== "trash" && user.orgDev && (
-            <CreateDropdown defaultVisible={showNewUserGuide(user)} mode={mode} />
-          )}
-        </OperationRightWrapper>
-      </OperationWrapper>
+                    }
+                    options={categoryOptions}
+                  // getPopupContainer={(node) => node}
+                    suffixIcon={<ArrowSolidIcon />}
+                />}
+              {mode === "marketplace" && (
+                <FilterDropdown
+                  style={{ minWidth: "220px" }}
+                  variant="borderless"
+                  value={categoryFilter}
+                  onChange={(value: any) => setCategoryFilter(value as ApplicationCategoriesEnum)}
+                  options={categoryOptions}
+                  // getPopupContainer={(node) => node}
+                  suffixIcon={<ArrowSolidIcon />} />
+              )}
 
-      <ContentWrapper>
-        {isFetching && resList.length === 0 ? (
-          <SkeletonStyle active paragraph={{ rows: 8, width: 648 }} title={false} />
-        ) : (
-          <>
-            {resList.length > 0 ? (
-              <>
-                {mode === "trash" ? (
-                  <TrashTableView resources={resList} />
-                ) : (
-                  <>
-                    <LayoutSwitcher onClick={() => setLayout(layout === "list" ? "card" : "list")}>
-                      {layout === "list" ? <HomeCardIcon /> : <HomeListIcon />}
-                    </LayoutSwitcher>
-                    {layout === "list" ? (
-                      <HomeTableView resources={resList} />
-                    ) : (
-                      <HomeCardView resources={resList} />
-                    )}
-                  </>
-                )}
-              </>
-            ) : (
-              <EmptyView>
-                <HomeEmptyIcon style={{ width: "90px", height: "120px" }} />
-                <div style={{ marginBottom: "16px" }}>
-                  {mode === "trash"
-                    ? trans("home.trashEmpty")
-                    : user.orgDev
-                    ? trans("home.projectEmptyCanAdd")
-                    : trans("home.projectEmpty")}
-                </div>
-                {mode !== "trash" && user.orgDev && <CreateDropdown mode={mode} />}
-              </EmptyView>
-            )}
-          </>
-        )}
-      </ContentWrapper>
+              <LayoutSwitcher onClick={() => setLayout(layout === "list" ? "card" : "list")}>
+                {layout === "list" ? <HomeCardIcon/> : <HomeListIcon/>}
+              </LayoutSwitcher>
+
+              <SearchWrapper>
+                <Search
+                  placeholder={trans("search")}
+                  value={searchValue || ""}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  style={{ width: "192px", height: "32px", margin: "0" }}
+                />
+              
+
+              {mode !== "trash" && mode !== "marketplace" && user.orgDev && (
+                <CreateDropdown 
+                  defaultVisible={showNewUserGuide(user)} 
+                  mode={mode} 
+                  setModify={setIsCreated} 
+                  modify={isCreated!} />
+              )}
+              </SearchWrapper>
+
+            </OperationWrapper>
+
+            <Divider />
+
+            <ContentWrapper>
+
+              {isFetching && resList.length === 0 ? (
+                <SkeletonStyle active paragraph={{ rows: 8, width: 648 }} title={false} />
+              ) : (
+                <>
+                  {resList.length > 0 ? (
+                    <>
+                      {mode === "trash" ? (
+                        <TrashTableView resources={resList} setModify={setModify} modify={modify!}/>
+                      ) : (
+                        <>
+                          
+                          {mode === "marketplace" && (
+                            <>
+                              {layout === "list" ? (
+                                <>
+                                  {isSelfHost ? (
+                                    <>
+                                      <h2 style={{ padding: "0 36px" }}>{trans("home.localMarketplaceTitle")}</h2>
+                                      <HomeTableView resources={resList.filter(app => app.isLocalMarketplace)} />
+                                      <Divider style={{ padding: "0 36px", margin: "0 36px", width: "calc(100% - 72px) !important" }} />
+                                      <h2 style={{ padding: "0 36px" }}>{trans("home.globalMarketplaceTitle")}</h2>
+                                      <HomeTableView resources={resList.filter(app => !app.isLocalMarketplace)} />
+                                    </>
+                                  ) : (
+                                    <>
+                                      <h2 style={{padding: "0 36px"}}>{trans("home.globalMarketplaceTitle")}</h2>
+                                      <HomeTableView resources={resList.filter(app => app.isLocalMarketplace)} />
+                                    </> 
+                                  )}
+                                </>
+                              ) : (
+                                  <>
+                                  {isSelfHost ? (
+                                    <>
+                                      <h2 style={{padding: "0 36px"}}>{trans("home.localMarketplaceTitle")}</h2>
+                                      <HomeCardView resources={resList.filter(app => app.isLocalMarketplace)} />
+                                      <Divider style={{padding: "0 36px", margin: "12px 36px", width: "calc(100% - 72px) !important"}}/>
+                                      <h2 style={{padding: "0 36px"}}>{trans("home.globalMarketplaceTitle")}</h2>
+                                      <HomeCardView resources={resList.filter(app => !app.isLocalMarketplace)} />
+                                    </>
+                                  ) : (
+                                    <>
+                                      <h2 style={{padding: "0 36px"}}>{trans("home.globalMarketplaceTitle")}</h2>
+                                      <HomeCardView resources={resList.filter(app => app.isLocalMarketplace)} />
+                                    </>
+                                  )}
+                                </>
+                              )}
+                            </>
+                          )}
+                          {mode !== "marketplace" && (
+                            <>
+                              {layout === "list" ? (
+                                <HomeTableView resources={resList} setModify={setModify} modify={modify!} mode={mode}/>
+                              ) : (
+                                <HomeCardView resources={resList} setModify={setModify} modify={modify!} mode={mode} />
+                              )}
+                            </>
+                          )}
+
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <EmptyView>
+                      <HomeEmptyIcon style={{ width: "90px", height: "120px" }} />
+                      <div style={{ marginBottom: "16px" }}>
+                        {mode === "trash"
+                          ? trans("home.trashEmpty")
+                          : mode === "marketplace"
+                          ? trans("home.noMarketplaceApps")
+                          : user.orgDev
+                          ? trans("home.projectEmptyCanAdd")
+                          : trans("home.projectEmpty")}
+                      </div>
+                      {mode !== "trash" && mode !== "marketplace" && user.orgDev && <CreateDropdown mode={mode} setModify={setIsCreated} modify={isCreated!}/>}
+                    </EmptyView>
+                  )}
+                </>
+              )}
+            </ContentWrapper>
+            {visibility && resList.length ? <div>
+              <PaginationLayout>
+                <Pagination
+                    current={currentPage}
+                    pageSize={pageSize}
+                    onChange={handlePageChange}
+                    onShowSizeChange={handlePageSizeChange}
+                    total={total}
+                    showSizeChanger
+                />
+              </PaginationLayout>
+            </div> : null}
+          </Card>  
+          
+        </HomeView>
+      
     </Wrapper>
   );
 }

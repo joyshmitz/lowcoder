@@ -3,13 +3,13 @@ import { default as Dropdown } from "antd/es/dropdown";
 import { default as DropdownButton } from "antd/es/dropdown/dropdown-button";
 import { BoolControl } from "comps/controls/boolControl";
 import { BoolCodeControl, StringControl } from "comps/controls/codeControl";
-import { ButtonStyleType } from "comps/controls/styleControlConstants";
+import { DropdownStyle, DropdownStyleType } from "comps/controls/styleControlConstants";
 import { withDefault } from "comps/generators";
 import { UICompBuilder } from "comps/generators/uiCompBuilder";
 import { disabledPropertyView, hiddenPropertyView } from "comps/utils/propertyUtils";
 import { Section, sectionNames } from "lowcoder-design";
 import { trans } from "i18n";
-import React, { ReactElement, useContext } from "react";
+import React, { ReactElement, useContext, useEffect } from "react";
 import { EditorContext } from "comps/editorState";
 import styled from "styled-components";
 import { ButtonEventHandlerControl } from "../../controls/eventHandlerControl";
@@ -21,32 +21,50 @@ import {
   ButtonStyleControl,
   getButtonStyle,
 } from "./buttonCompConstants";
-
+import { styleControl } from "@lowcoder-ee/comps/controls/styleControl";
 
 const StyledDropdownButton = styled(DropdownButton)`
   width: 100%;
+  
   .ant-btn-group {
     width: 100%;
+   
   }
 `;
 
-const LeftButtonWrapper = styled.div<{ $buttonStyle: ButtonStyleType }>`
+const LeftButtonWrapper = styled.div<{ $buttonStyle: DropdownStyleType }>`
   width: calc(100%);
   ${(props) => `margin: ${props.$buttonStyle.margin};`}
   margin-right: 0;
+  .ant-btn span {
+    ${(props) => props.$buttonStyle.textDecoration !== undefined ? `text-decoration: ${props.$buttonStyle.textDecoration};` : ''}
+    ${(props) => props.$buttonStyle.fontFamily !== undefined ? `font-family: ${props.$buttonStyle.fontFamily};` : ''}
+  }
+  
   .ant-btn {
     ${(props) => getButtonStyle(props.$buttonStyle)}
     margin: 0 !important;
     height: 100%;
     &.ant-btn-default {
       margin: 0 !important;
+
       ${(props) => `border-radius: ${props.$buttonStyle.radius} 0 0 ${props.$buttonStyle.radius};`}
+      ${(props) => `text-transform: ${props.$buttonStyle.textTransform};`}
+      ${(props) => `font-weight: ${props.$buttonStyle.textWeight};`}
     }
+    ${(props) => `background: ${props.$buttonStyle.background};`}
+    ${(props) => `color: ${props.$buttonStyle.text};`}
+    ${(props) => `padding: ${props.$buttonStyle.padding};`}
+    ${(props) => `font-size: ${props.$buttonStyle.textSize};`}
+    ${(props) => `font-style: ${props.$buttonStyle.fontStyle};`}
+
     width: 100%;
+    line-height:${(props) => props.$buttonStyle.lineHeight}; 
   }
+  
 `;
 
-const RightButtonWrapper = styled.div<{ $buttonStyle: ButtonStyleType }>`
+const RightButtonWrapper = styled.div<{ $buttonStyle: DropdownStyleType }>`
   // width: 32px;
   ${(props) => `margin: ${props.$buttonStyle.margin};`}
   margin-left: -1px;
@@ -69,7 +87,7 @@ const DropdownTmpComp = (function () {
     options: DropdownOptionControl,
     disabled: BoolCodeControl,
     onEvent: ButtonEventHandlerControl,
-    style: ButtonStyleControl,
+    style: styleControl(DropdownStyle, 'style'),
   };
   return new UICompBuilder(childrenMap, (props) => {
     const hasIcon =
@@ -83,18 +101,22 @@ const DropdownTmpComp = (function () {
         key: option.label + " - " + index,
         disabled: option.disabled,
         icon: hasIcon && <span>{option.prefixIcon}</span>,
-        onEvent: option.onEvent,
+        index,
       }));
 
     const menu = (
       <Menu
         items={items}
-        onClick={({ key }) => items.find((o) => o.key === key)?.onEvent("click")}
+        onClick={({ key }) => {
+          const item = items.find((o) => o.key === key);
+          const itemIndex = props.options.findIndex(option => option.label === item?.label);
+          item && props.options[itemIndex]?.onEvent("click");
+        }}
       />
     );
 
     return (
-      <ButtonCompWrapper disabled={props.disabled}>
+      <ButtonCompWrapper $disabled={props.disabled}>
         {props.onlyMenu ? (
           <Dropdown
             disabled={props.disabled}

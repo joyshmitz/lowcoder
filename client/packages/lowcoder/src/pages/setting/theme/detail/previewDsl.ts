@@ -508,7 +508,7 @@ const dsl = {
                         style: {
                           label: "",
                           fill: "",
-                          thumbBoder: "",
+                          thumbBorder: "",
                           thumb: "",
                           track: "",
                         },
@@ -677,6 +677,7 @@ const dsl = {
   settings: {
     maxWidth: { dropdown: "3200", input: "3200" },
     themeId: "",
+    preventStylesOverwriting: false,
   },
   preload: { libs: [], script: "", css: "" },
 };

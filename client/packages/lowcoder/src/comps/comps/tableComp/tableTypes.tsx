@@ -13,7 +13,7 @@ import {
 import { dropdownControl } from "comps/controls/dropdownControl";
 import { eventHandlerControl } from "comps/controls/eventHandlerControl";
 import { styleControl } from "comps/controls/styleControl";
-import { TableColumnStyle, TableRowStyle, TableStyle } from "comps/controls/styleControlConstants";
+import { TableColumnStyle, TableRowStyle, TableStyle, TableToolbarStyle, TableHeaderStyle, TableSummaryRowStyle } from "comps/controls/styleControlConstants";
 import {
   MultiCompBuilder,
   stateComp,
@@ -31,11 +31,37 @@ import {
   RecordConstructorToView,
 } from "lowcoder-core";
 import { controlItem } from "lowcoder-design";
-import { JSONObject } from "util/jsonTypes";
+import { JSONArray, JSONObject } from "util/jsonTypes";
 import { ExpansionControl } from "./expansionControl";
 import { PaginationControl } from "./paginationControl";
 import { SelectionControl } from "./selectionControl";
 import { AutoHeightControl } from "comps/controls/autoHeightControl";
+
+const editModeClickOptions = [
+  {
+    label: trans("table.singleClick"),
+    value: "single",
+  },
+  {
+    label: trans("table.doubleClick"),
+    value: "double",
+  },
+] as const;
+
+const summarRowsOptions = [
+  {
+    label: "1",
+    value: "1",
+  },
+  {
+    label: "2",
+    value: "2",
+  },
+  {
+    label: "3",
+    value: "3",
+  },
+] as const;
 
 const sizeOptions = [
   {
@@ -77,6 +103,26 @@ export const TableEventOptions = [
     label: trans("table.rowExpand"),
     value: "rowExpand",
     description: trans("table.rowExpand"),
+  },
+  {
+    label: trans("table.rowShrink"),
+    value: "rowShrink",
+    description: trans("table.rowShrink"),
+  },
+  {
+    label: trans("table.columnEdited"),
+    value: "columnEdited",
+    description: trans("table.columnEdited"),
+  },
+  {
+    label: trans("table.search"),
+    value: "dataSearch",
+    description: trans("table.search"),
+  },
+  {
+    label: trans("table.download"),
+    value: "download",
+    description: trans("table.download"),
   },
   {
     label: trans("table.filterChange"),
@@ -170,11 +216,17 @@ export type RowHeightViewType = (param: {
 }) => string;
 
 const tableChildrenMap = {
-  hideBordered: BoolControl,
+  // hideBordered: BoolControl,
+  showHeaderGridBorder: BoolControl,
+  showRowGridBorder: withDefault(BoolControl,true),
+  showHRowGridBorder: withDefault(BoolControl,true),
   hideHeader: BoolControl,
   fixedHeader: BoolControl,
   autoHeight: withDefault(AutoHeightControl, "auto"),
+  showVerticalScrollbar: BoolControl,
+  showHorizontalScrollbar: BoolControl,
   data: withIsLoadingMethod(JSONObjectArrayControl),
+  newData: stateComp<JSONArray>([]),
   showDataLoadSpinner: withDefault(BoolPureControl, true),
   columns: ColumnListComp,
   size: dropdownControl(sizeOptions, "middle"),
@@ -182,22 +234,32 @@ const tableChildrenMap = {
   pagination: PaginationControl,
   sort: valueComp<Array<SortValue>>([]),
   toolbar: TableToolbarComp,
-  style: styleControl(TableStyle),
-  rowStyle: styleControl(TableRowStyle),
+  showSummary: BoolControl,
+  summaryRows: dropdownControl(summarRowsOptions, "1"),
+  style: styleControl(TableStyle, 'style'),
+  rowStyle: styleControl(TableRowStyle, 'rowStyle'),
+  summaryRowStyle: styleControl(TableSummaryRowStyle, 'summaryRowStyle'),
+  toolbarStyle: styleControl(TableToolbarStyle, 'toolbarStyle'),
+  headerStyle: styleControl(TableHeaderStyle, 'headerStyle'),
   searchText: StringControl,
-  columnsStyle: withDefault(styleControl(TableColumnStyle), {borderWidth: '1px', radius: '0px'}),
+  columnsStyle: styleControl(TableColumnStyle, 'columnsStyle'),
   viewModeResizable: BoolControl,
+  visibleResizables: BoolControl,
   // sample data for regenerating columns
   dataRowExample: stateComp<JSONObject | null>(null),
   onEvent: TableEventControl,
   loading: BoolCodeControl,
   rowColor: RowColorComp,
   rowAutoHeight: withDefault(AutoHeightControl, "auto"),
+  tableAutoHeight: withDefault(AutoHeightControl, "auto"),
   rowHeight: RowHeightComp,
   dynamicColumn: BoolPureControl,
   // todo: support object config
   dynamicColumnConfig: ArrayStringControl,
   expansion: ExpansionControl,
+  selectedCell: stateComp<JSONObject>({}),
+  inlineAddNewRow: BoolControl,
+  editModeClicks: dropdownControl(editModeClickOptions, "single"),
 };
 
 export const TableInitComp = (function () {

@@ -5,7 +5,7 @@ import { ChangeEventHandlerControl } from "comps/controls/eventHandlerControl";
 import { LabelControl } from "comps/controls/labelControl";
 import { SelectOptionControl } from "comps/controls/optionsControl";
 import { styleControl } from "comps/controls/styleControl";
-import { SegmentStyle, SegmentStyleType } from "comps/controls/styleControlConstants";
+import { AnimationStyle, LabelStyle, SegmentStyle, SegmentStyleType } from "comps/controls/styleControlConstants";
 import styled, { css } from "styled-components";
 import { UICompBuilder } from "../../generators";
 import { CommonNameConfig, NameConfig, withExposingConfigs } from "../../generators/withExposing";
@@ -23,14 +23,14 @@ import { trans } from "i18n";
 import { hasIcon } from "comps/utils";
 import { RefControl } from "comps/controls/refControl";
 
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { EditorContext } from "comps/editorState";
+import { migrateOldData, withDefault } from "comps/generators/simpleGenerators";
+import { fixOldInputCompData } from "../textInputComp/textInputConstants";
 
 const getStyle = (style: SegmentStyleType) => {
   return css`
     &.ant-segmented:not(.ant-segmented-disabled) {
-      background-color: ${style.background};
-
       &,
       .ant-segmented-item-selected,
       .ant-segmented-thumb,
@@ -44,13 +44,21 @@ const getStyle = (style: SegmentStyleType) => {
       }
       .ant-segmented-item-selected,
       .ant-segmented-thumb {
-        background-color: ${style.indicatorBackground};
+        background: ${style.indicatorBackground};
       }
     }
 
     &.ant-segmented,
     .ant-segmented-item-selected {
       border-radius: ${style.radius};
+    }
+    &.ant-segmented, .ant-segmented-item-label {
+      font-family:${style.fontFamily};
+      font-style:${style.fontStyle};
+      font-size:${style.textSize};
+      font-weight:${style.textWeight};
+      text-transform:${style.textTransform};
+      text-decoration:${style.textDecoration};
     }
   `;
 };
@@ -62,24 +70,32 @@ const Segmented = styled(AntdSegmented)<{ $style: SegmentStyleType }>`
 `;
 
 const SegmentChildrenMap = {
+  defaultValue: stringExposingStateControl("value"),
   value: stringExposingStateControl("value"),
   label: LabelControl,
   disabled: BoolCodeControl,
   onEvent: ChangeEventHandlerControl,
   options: SelectOptionControl,
-  style: styleControl(SegmentStyle),
+  style: styleControl(SegmentStyle, 'style'),
+  labelStyle: styleControl(LabelStyle , 'labelStyle'),
+  animationStyle: styleControl(AnimationStyle, 'animationStyle'),
   viewRef: RefControl<HTMLDivElement>,
 
   ...SelectInputValidationChildren,
   ...formDataChildren,
 };
 
-const SegmentedControlBasicComp = (function () {
+let SegmentedControlBasicComp = (function () {
   return new UICompBuilder(SegmentChildrenMap, (props) => {
-    const [validateState, handleValidate] = useSelectInputValidate(props);
+    const [
+      validateState,
+      handleChange,
+    ] = useSelectInputValidate(props);
     return props.label({
       required: props.required,
       style: props.style,
+      labelStyle: props.labelStyle,
+      animationStyle: props.animationStyle,
       children: (
         <Segmented
           ref={props.viewRef}
@@ -88,9 +104,7 @@ const SegmentedControlBasicComp = (function () {
           value={props.value.value}
           $style={props.style}
           onChange={(value) => {
-            handleValidate(value.toString());
-            props.value.onChange(value.toString());
-            props.onEvent("change");
+            handleChange(String(value));
           }}
           options={props.options
             .filter((option) => option.value !== undefined && !option.hidden)
@@ -109,7 +123,7 @@ const SegmentedControlBasicComp = (function () {
       <>
         <Section name={sectionNames.basic}>
           {children.options.propertyView({})}
-          {children.value.propertyView({ label: trans("prop.defaultValue") })}
+          {children.defaultValue.propertyView({ label: trans("prop.defaultValue") })}
         </Section>
 
         {["logic", "both"].includes(useContext(EditorContext).editorModeStatus) && (
@@ -127,15 +141,25 @@ const SegmentedControlBasicComp = (function () {
         )}
 
         {["layout", "both"].includes(useContext(EditorContext).editorModeStatus) && (
+          <>
           <Section name={sectionNames.style}>
             {children.style.getPropertyView()}
           </Section>
+          <Section name={sectionNames.labelStyle}>
+            {children.labelStyle.getPropertyView()}
+          </Section>
+          <Section name={sectionNames.animationStyle} hasTooltip={true}>
+            {children.animationStyle.getPropertyView()}
+            </Section>
+            </>
         )}
       </>
     ))
     .setExposeMethodConfigs(selectDivRefMethods)
     .build();
 })();
+
+SegmentedControlBasicComp = migrateOldData(SegmentedControlBasicComp, fixOldInputCompData);
 
 export const SegmentedControlComp = withExposingConfigs(SegmentedControlBasicComp, [
   new NameConfig("value", trans("selectInput.valueDesc")),

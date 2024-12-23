@@ -189,7 +189,7 @@ export function listPlugins(ctx: PluginContext, ids: string[] = []) {
     const pluginMeta = {
       ...plugin,
       shouldValidateDataSourceConfig: !!plugin.validateDataSourceConfig,
-    } as DataSourcePluginMeta;
+    } as unknown as DataSourcePluginMeta;
 
     pluginMetaOps.forEach(([path, fn]) => {
       jsonPath.apply(pluginMeta, path, fn);
@@ -212,13 +212,17 @@ export async function runPluginQuery(
   const queryConfig = await getQueryConfig(plugin, dataSourceConfig);
   const action = await evalToValue(queryConfig, dsl, context, dataSourceConfig);
 
-  //forward cookies
+  // forward cookies
   context.forEach(({ key, value }) => {
-    if (dataSourceConfig.dynamicParamsConfig && key in dataSourceConfig.dynamicParamsConfig) {
+    // for oauth(inherit from login) support
+    if(key == "OAUTH_ACCESS_TOKEN") {
+      dataSourceConfig["OAUTH_ACCESS_TOKEN"] = value
+    } else if (dataSourceConfig.dynamicParamsConfig && key in dataSourceConfig.dynamicParamsConfig) {
       const valueKey = `${key}.value`;
-      dataSourceConfig.dynamicParamsConfig[valueKey] = value[0].value
+      dataSourceConfig.dynamicParamsConfig[valueKey] = value[0].value;
     }
-  })
+  });
+
   const result = await plugin.run(action, dataSourceConfig, pluginContext);
 
   return {

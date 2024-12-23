@@ -8,6 +8,8 @@ import { User } from "constants/userConstants";
 import {
   DeleteOrgUserPayload,
   GroupUsersPayload,
+  OrgAPIUsagePayload,
+  OrgLastMonthAPIUsagePayload,
   OrgUsersPayload,
   RemoveGroupUserPayload,
 } from "redux/reduxActions/orgActions";
@@ -24,15 +26,19 @@ const initialState: OrgReduxState = {
   groupUsersFetching: true,
   fetchOrgGroupsFinished: false,
   orgCreateStatus: "init",
+  apiUsage: 0,
+  lastMonthApiUsage: 0,
+  orgUserStats: {},
 };
 
 const orgReducer = createImmerReducer(initialState, {
   [ReduxActionTypes.FETCH_ORG_GROUPS_SUCCESS]: (
     state: OrgReduxState,
-    action: ReduxAction<{ orgGroups: OrgGroup[] }>
+    action: ReduxAction<{ orgGroups: OrgGroup[], orgUserStats: Record<string, number> }>
   ): OrgReduxState => ({
     ...state,
     orgGroups: action.payload.orgGroups,
+    orgUserStats: action.payload.orgUserStats,
     fetchOrgGroupsFinished: true,
   }),
   [ReduxActionErrorTypes.FETCH_ORG_GROUPS_ERROR]: (state: OrgReduxState): OrgReduxState => ({
@@ -104,6 +110,22 @@ const orgReducer = createImmerReducer(initialState, {
     ...state,
     orgCreateStatus: "error",
   }),
+  
+  [ReduxActionTypes.FETCH_ORG_API_USAGE_SUCCESS]: (
+    state: OrgReduxState,
+    action: ReduxAction<OrgAPIUsagePayload>
+  ): OrgReduxState => ({
+    ...state,
+    apiUsage: action.payload.apiUsage,
+  }),
+
+  [ReduxActionTypes.FETCH_ORG_LAST_MONTH_API_USAGE_SUCCESS]: (
+    state: OrgReduxState,
+    action: ReduxAction<OrgLastMonthAPIUsagePayload>
+  ): OrgReduxState => ({
+    ...state,
+    lastMonthApiUsage: action.payload.lastMonthApiUsage,
+  }),
 });
 
 export interface OrgReduxState {
@@ -115,6 +137,9 @@ export interface OrgReduxState {
   groupUsersFetching: boolean;
   fetchOrgGroupsFinished: boolean;
   orgCreateStatus: ApiRequestStatus;
+  apiUsage: number;
+  lastMonthApiUsage: number;
+  orgUserStats: Record<string, number>;
 }
 
 export default orgReducer;

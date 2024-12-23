@@ -5,7 +5,7 @@ import {
   TableCurrentDataSource,
   TablePaginationConfig,
 } from "antd/es/table/interface";
-import { SortOrder } from "antd/lib/table/interface";
+import type { SortOrder } from "antd/es/table/interface";
 import { __COLUMN_DISPLAY_VALUE_FN } from "comps/comps/tableComp/column/columnTypeCompBuilder";
 import { CellColorViewType, RawColumnType, Render } from "comps/comps/tableComp/column/tableColumnComp";
 import { TableFilter, tableFilterOperatorMap } from "comps/comps/tableComp/tableToolbarComp";
@@ -18,6 +18,9 @@ import { JSONObject, JSONValue } from "util/jsonTypes";
 import { StatusType } from "./column/columnTypeComps/columnStatusComp";
 import { ColumnListComp, tableDataRowExample } from "./column/tableColumnListComp";
 import { TableColumnLinkStyleType, TableColumnStyleType } from "comps/controls/styleControlConstants";
+import Tooltip from "antd/es/tooltip";
+import InfoCircleOutlined from "@ant-design/icons/InfoCircleOutlined";
+import { EMPTY_ROW_KEY } from "./tableCompView";
 
 export const COLUMN_CHILDREN_KEY = "children";
 export const OB_ROW_ORI_INDEX = "__ob_origin_index";
@@ -240,14 +243,37 @@ export function getColumnsAggr(
   });
 }
 
-function renderTitle(props: { title: string; editable: boolean }) {
-  const { title, editable } = props;
+function renderTitle(props: { title: string; tooltip: string; editable: boolean }) {
+  const { title, tooltip, editable } = props;
   return (
     <div>
-      {title}
+      <Tooltip title={tooltip}>
+        <span style={{borderBottom: tooltip ? '1px dotted' : ''}}>
+          {title}
+        </span>
+      </Tooltip>
       {editable && <EditableIcon style={{ verticalAlign: "baseline", marginLeft: "4px" }} />}
     </div>
   );
+}
+
+function getInitialColumns(
+  columnsAggrData: ColumnsAggrData,
+  customColumns: string[],
+) {
+  let initialColumns = [];
+  Object.keys(columnsAggrData).forEach(column => {
+    if(customColumns.includes(column)) return;
+    initialColumns.push({
+      label: column,
+      value: `{{currentRow.${column}}}`
+    });
+  });
+  initialColumns.push({
+    label: 'Select with handlebars',
+    value: '{{currentCell}}',
+  })
+  return initialColumns;
 }
 
 export type CustomColumnType<RecordType> = ColumnType<RecordType> & {
@@ -269,7 +295,11 @@ export function columnsToAntdFormat(
   dynamicColumn: boolean,
   dynamicColumnConfig: Array<string>,
   columnsAggrData: ColumnsAggrData,
+  editMode: string,
+  onTableEvent: (eventName: any) => void,
 ): Array<CustomColumnType<RecordType>> {
+  const customColumns = columns.filter(col => col.isCustom).map(col => col.dataIndex);
+  const initialColumns = getInitialColumns(columnsAggrData, customColumns);
   const sortMap: Map<string | undefined, SortOrder> = new Map(
     sort.map((s) => [s.column, s.desc ? "descend" : "ascend"])
   );
@@ -287,7 +317,7 @@ export function columnsToAntdFormat(
     }
     return 0;
   });
-  return sortedColumns.flatMap((column) => {
+  return sortedColumns.flatMap((column, mIndex) => {
     if (
       columnHide({
         hide: column.hide,
@@ -309,9 +339,11 @@ export function columnsToAntdFormat(
       text: string;
       status: StatusType;
     }[];
-    const title = renderTitle({ title: column.title, editable: column.editable });
+    const title = renderTitle({ title: column.title, tooltip: column.titleTooltip, editable: column.editable });
+
     return {
-      title: title,
+      key: `${column.dataIndex}-${mIndex}`,
+      title: column.showTitle ? title : '',
       titleText: column.title,
       dataIndex: column.dataIndex,
       align: column.align,
@@ -319,10 +351,14 @@ export function columnsToAntdFormat(
       fixed: column.fixed === "close" ? false : column.fixed,
       style: {
         background: column.background,
+        margin: column.margin,
         text: column.text,
         border: column.border,
         radius: column.radius,
         textSize: column.textSize,
+        textWeight: column.textWeight,
+        fontStyle:column.fontStyle,
+        fontFamily: column.fontFamily,
         borderWidth: column.borderWidth,
       },
       linkStyle: {
@@ -333,28 +369,39 @@ export function columnsToAntdFormat(
       cellColorFn: column.cellColor,
       onWidthResize: column.onWidthResize,
       render: (value: any, record: RecordType, index: number) => {
+        const row = _.omit(record, OB_ROW_ORI_INDEX);
         return column
           .render(
             {
               currentCell: value,
-              currentRow: _.omit(record, OB_ROW_ORI_INDEX),
+              currentRow: row,
               currentIndex: index,
               currentOriginalIndex: tryToNumber(record[OB_ROW_ORI_INDEX]),
+              initialColumns,
             },
             String(record[OB_ROW_ORI_INDEX])
           )
           .getView()
           .view({
-            editable: column.editable,
-            size, candidateTags: tags,
+            editable: record[OB_ROW_ORI_INDEX].startsWith(EMPTY_ROW_KEY) || column.editable,
+            size,
+            candidateTags: tags,
             candidateStatus: status,
             textOverflow: column.textOverflow,
+            cellTooltip: column.cellTooltip({
+              currentCell: value,
+              currentRow: row,
+              currentIndex: index,
+            }),
+            editMode,
+            onTableEvent,
           });
       },
       ...(column.sortable
         ? {
-            sorter: true,
+            sorter: { multiple: (sortedColumns.length - mIndex) + 1 },
             sortOrder: sortMap.get(column.dataIndex),
+            showSorterTooltip: false,
           }
         : {}),
     };
@@ -418,8 +465,8 @@ export function genSelectionParams(
   filterData: RecordType[],
   selection: string
 ): Record<string, unknown> | undefined {
-  const idx = filterData.findIndex((row) => row[OB_ROW_ORI_INDEX] === selection);
-  if (idx < 0) {
+  const idx = filterData?.findIndex((row) => row[OB_ROW_ORI_INDEX] === selection);
+  if (!Boolean(filterData) || idx < 0) {
     return undefined;
   }
   const currentRow = filterData[idx];

@@ -11,42 +11,56 @@ import {
 } from "./selectInputConstants";
 import { EllipsisTextCss, ValueFromOption } from "lowcoder-design";
 import { trans } from "i18n";
+import { fixOldInputCompData } from "../textInputComp/textInputConstants";
+import { migrateOldData } from "comps/generators/simpleGenerators";
 
-const getStyle = (style: RadioStyleType) => {
+const getStyle = (style: RadioStyleType, inputFieldStyle?:RadioStyleType ) => {
   return css`
     .ant-radio-wrapper:not(.ant-radio-wrapper-disabled) {
-      color: ${style.staticText};
+      color: ${inputFieldStyle?.staticText};
       // height: 22px;
       max-width: calc(100% - 8px);
-      padding: ${style.padding};
+      padding: ${inputFieldStyle?.padding};
       span:not(.ant-radio) {
         ${EllipsisTextCss};
+        font-family:${inputFieldStyle?.fontFamily};
+        font-size:${inputFieldStyle?.textSize};
+        font-weight:${inputFieldStyle?.textWeight};
+        font-style:${inputFieldStyle?.fontStyle};
+        text-transform:${inputFieldStyle?.textTransform};
+        text-decoration:${inputFieldStyle?.textDecoration};
       }
 
       .ant-radio-checked {
         .ant-radio-inner {
-          background-color: ${style.checkedBackground};
-          border-color: ${style.checkedBackground};
+          background-color: ${inputFieldStyle?.checkedBackground};
+          border-color: ${inputFieldStyle?.uncheckedBorder};
         }
 
         &::after {
-          border-color: ${style.checkedBackground};
+          border-color: ${inputFieldStyle?.uncheckedBorder};
         }
       }
 
       .ant-radio-inner {
-        background-color: ${style.uncheckedBackground};
-        border-color: ${style.uncheckedBorder};
-
+        background-color: ${inputFieldStyle?.uncheckedBackground};
+        border-color: ${inputFieldStyle?.uncheckedBorder};
+        border-width:${inputFieldStyle?.borderWidth};
         &::after {
-          background-color: ${style.checked};
+          background-color: ${inputFieldStyle?.checked};
         }
+      }
+
+      &:hover .ant-radio-inner, 
+      .ant-radio:hover .ant-radio-inner,
+      .ant-radio-input + ant-radio-inner {
+        ${inputFieldStyle?.hoverBackground && `background-color: ${style.hoverBackground}`};
       }
 
       &:hover .ant-radio-inner,
       .ant-radio:hover .ant-radio-inner,
       .ant-radio-input:focus + .ant-radio-inner {
-        border-color: ${style.checkedBackground};
+        border-color: ${inputFieldStyle?.uncheckedBorder};
       }
     }
   `;
@@ -55,11 +69,12 @@ const getStyle = (style: RadioStyleType) => {
 const Radio = styled(AntdRadioGroup)<{
   $style: RadioStyleType;
   $layout: ValueFromOption<typeof RadioLayoutOptions>;
+  $inputFieldStyle:RadioStyleType
 }>`
   width: 100%;
   min-height: 32px;
 
-  ${(props) => props.$style && getStyle(props.$style)}
+  ${(props) => props.$style && getStyle(props.$style, props.$inputFieldStyle)}
   ${(props) => {
     if (props.$layout === "horizontal") {
       return css`
@@ -81,23 +96,28 @@ const Radio = styled(AntdRadioGroup)<{
   }}
 `;
 
-const RadioBasicComp = (function () {
+let RadioBasicComp = (function () {
   return new UICompBuilder(RadioChildrenMap, (props) => {
-    const [validateState, handleValidate] = useSelectInputValidate(props);
+    const [
+      validateState,
+      handleChange,
+    ] = useSelectInputValidate(props);
     return props.label({
       required: props.required,
       style: props.style,
+      labelStyle: props.labelStyle,
+      inputFieldStyle:props.inputFieldStyle,
+      animationStyle:props.animationStyle,
       children: (
         <Radio
           ref={props.viewRef}
           disabled={props.disabled}
           value={props.value.value}
           $style={props.style}
+          $inputFieldStyle={props.inputFieldStyle}
           $layout={props.layout}
           onChange={(e) => {
-            handleValidate(e.target.value);
-            props.value.onChange(e.target.value);
-            props.onEvent("change");
+            handleChange(e.target.value);
           }}
           options={props.options
             .filter((option) => option.value !== undefined && !option.hidden)
@@ -115,6 +135,8 @@ const RadioBasicComp = (function () {
     .setExposeMethodConfigs(selectDivRefMethods)
     .build();
 })();
+
+RadioBasicComp = migrateOldData(RadioBasicComp, fixOldInputCompData);
 
 export const RadioComp = withExposingConfigs(RadioBasicComp, [
   new NameConfig("value", trans("selectInput.valueDesc")),

@@ -8,6 +8,8 @@ export const modulesSelector = (state: AppState): ApplicationMeta[] => state.ui.
 
 export const recycleListSelector = (state: AppState) => state.ui.application.recycleList;
 
+export const marketplaceSelector = (state: AppState) => state.ui.application.marketplace;
+
 export const getHomeOrg = (state: AppState) => state.ui.application.homeOrg;
 
 export const isFetchingHomeData = (state: AppState) =>
@@ -41,3 +43,7 @@ export const isApplicationPublishing = (state: AppState): boolean => {
 export const getTemplateId = (state: AppState): any => {
   return state.ui.application.templateId;
 };
+
+export const getServerSettings = (state: AppState): Record<string,string> => {
+  return state.ui.application.serverSettings || {};
+}

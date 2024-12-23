@@ -1,26 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { default as Button } from "antd/es/button";
-// 渲染组件到编辑器
 import {
   changeChildAction,
   DispatchType,
   CompAction,
   RecordConstructorToView,
 } from "lowcoder-core";
-// 文字国际化转换api
 import { trans } from "i18n";
-// 右侧属性栏总框架
 import { UICompBuilder, withDefault } from "../../generators";
-// 右侧属性子框架
-import { Section, sectionNames } from "lowcoder-design";
-// 指示组件是否隐藏的开关
+import { ScrollBar, Section, sectionNames } from "lowcoder-design";
 import { hiddenPropertyView } from "comps/utils/propertyUtils";
-// 右侧属性开关
-
 import { BoolControl } from "comps/controls/boolControl";
-import { stringExposingStateControl } from "comps/controls/codeStateControl"; //文本并暴露值
+import { stringExposingStateControl } from "comps/controls/codeStateControl";
 import { dropdownControl } from "comps/controls/dropdownControl";
-import { styleControl } from "comps/controls/styleControl"; //样式输入框
+import { styleControl } from "comps/controls/styleControl";
 import { alignControl } from "comps/controls/alignControl";
 import { AutoHeightControl } from "comps/controls/autoHeightControl";
 import { jsonValueExposingStateControl } from "comps/controls/codeStateControl";
@@ -34,36 +27,45 @@ import {
   NumberControl,
   StringControl,
 } from "comps/controls/codeControl";
-// 事件控制
 import {
   clickEvent,
   eventHandlerControl,
 } from "comps/controls/eventHandlerControl";
-
-// 引入样式
 import {
   TimeLineStyle,
   heightCalculator,
   widthCalculator,
   marginCalculator,
+  TimeLineStyleType,
 } from "comps/controls/styleControlConstants";
-// 初始化暴露值
 import { stateComp, valueComp } from "comps/generators/simpleGenerators";
-// 组件对外暴露属性的api
 import {
   NameConfig,
   NameConfigHidden,
   withExposingConfigs,
 } from "comps/generators/withExposing";
-
 import { timelineDate, timelineNode, TimelineDataTooltip } from "./timelineConstants";
 import { convertTimeLineData } from "./timelineUtils";
 import { default as Timeline } from "antd/es/timeline";
+import { EditorContext } from "comps/editorState";
+import { styled } from "styled-components";
 
-import { ANTDICON } from "./antIcon"; // todo: select icons to not import all icons
+const TimelineWrapper = styled.div<{
+  $style: TimeLineStyleType
+}>`
+  ${props => `margin: ${props.$style.margin ?? '3px'}` };
+  ${props => `padding: ${props.$style.padding !== '3px' ? props.$style.padding : '20px 10px 0px 10px'}` };
+  ${props => `width: ${widthCalculator(props.$style.margin ?? '3px')}` };
+  ${props => `height: ${heightCalculator(props.$style.margin ?? '3px')}` };
+  ${props => `background: ${props.$style.background}` };
+  ${props => `border-radius: ${props.$style.radius}` };
+  overflow: auto;
+  overflow-x: hidden;
 
-import { useContext } from "react";
-import { EditorContext } from "comps/editorState"; 
+  .ant-timeline .ant-timeline-item-head {
+    background-color: transparent;
+  }
+`;
 
 const EventOptions = [
   clickEvent,
@@ -79,11 +81,26 @@ const childrenMap = {
   value: jsonControl(convertTimeLineData, timelineDate),
   mode: dropdownControl(modeOptions, "alternate"),
   reverse: BoolControl,
+  autoHeight: AutoHeightControl,
+  verticalScrollbar: withDefault(BoolControl, false),
   pending: withDefault(StringControl, trans("timeLine.defaultPending")),
   onEvent: eventHandlerControl(EventOptions),
-  style: styleControl(TimeLineStyle),
+  style: styleControl(TimeLineStyle, 'style'),
   clickedObject: valueComp<timelineNode>({ title: "" }),
   clickedIndex: valueComp<number>(0),
+};
+
+// Utility function to dynamically load Ant Design icons
+const loadIcon = async (iconName: string) => {
+  if (!iconName) return null;
+  try {
+    const module = await import(`@ant-design/icons`);
+    const IconComponent = (module as any)[iconName];
+    return IconComponent ? <IconComponent /> : null;
+  } catch (error) {
+    console.error(`Error loading icon ${iconName}:`, error);
+    return null;
+  }
 };
 
 const TimelineComp = (
@@ -92,14 +109,26 @@ const TimelineComp = (
   }
 ) => {
   const { value, dispatch, style, mode, reverse, onEvent } = props;
+  const [icons, setIcons] = useState<React.ReactNode[]>([]);
+  useEffect(() => {
+    const loadIcons = async () => {
+      const iconComponents = await Promise.all(
+        value.map((node) =>
+          node.dot ? loadIcon(node.dot) : Promise.resolve(null)
+        )
+      );
+      setIcons(iconComponents);
+    };
+
+    loadIcons();
+  }, [value]);
+
   const timelineItems = value.map((value: timelineNode, index: number) => ({
     key: index,
     color: value?.color,
-    dot: value?.dot && ANTDICON.hasOwnProperty(value?.dot.toLowerCase())
-      ? ANTDICON[value?.dot.toLowerCase() as keyof typeof ANTDICON]
-      : "",
+    dot: icons[index] || "",
     label: (
-      <span style={{ color: value?.lableColor || style?.lableColor }}>
+      <span style={{ color: value?.labelColor || style?.labelColor }}>
         {value?.label}
       </span>
     ),
@@ -125,36 +154,25 @@ const TimelineComp = (
         </p>
       </>
     )
-  }
-  ))
+  }));
 
-  // TODO:parse px string
   return (
-    <div
-      style={{
-        margin: style.margin ?? '3px',
-        padding: style.padding !== '3px' ? style.padding : '20px 10px 0px 10px',
-        width: widthCalculator(style.margin ?? '3px'),
-        height: heightCalculator(style.margin ?? '3px'),
-        background: style.background,
-        overflow: "auto",
-        overflowX: "hidden",
-        borderRadius: style.radius,
-      }}
-    >
-      <Timeline
-        mode={props?.mode || "left"}
-        reverse={props?.reverse}
-        pending={
-          props?.pending && (
-            <span style={{ color: style?.titleColor }}>
-              {props?.pending || ""}
-            </span>
-          )
-        }
-        items={timelineItems}
-      />
-    </div>
+    <ScrollBar hideScrollbar={!props.verticalScrollbar}>
+      <TimelineWrapper $style={style}>
+        <Timeline
+          mode={props?.mode || "left"}
+          reverse={props?.reverse}
+          pending={
+            props?.pending && (
+              <span style={{ color: style?.titleColor }}>
+                {props?.pending || ""}
+              </span>
+            )
+          }
+          items={timelineItems}
+        />
+      </TimelineWrapper>
+    </ScrollBar>
   );
 };
 
@@ -181,6 +199,11 @@ let TimeLineBasicComp = (function () {
 
         {["layout", "both"].includes(useContext(EditorContext).editorModeStatus) && (
           <><Section name={sectionNames.layout}>
+              {children.autoHeight.getPropertyView()}
+              {!children.autoHeight.getView() && 
+                children.verticalScrollbar.propertyView({
+                  label: trans("prop.showVerticalScrollbar")
+                })}
               {children.mode.propertyView({
                 label: trans("timeLine.mode"),
                 tooltip: trans("timeLine.modeTooltip"),
@@ -205,7 +228,7 @@ let TimeLineBasicComp = (function () {
 
 TimeLineBasicComp = class extends TimeLineBasicComp {
   override autoHeight(): boolean {
-    return false;
+    return this.children.autoHeight.getView();
   }
 };
 

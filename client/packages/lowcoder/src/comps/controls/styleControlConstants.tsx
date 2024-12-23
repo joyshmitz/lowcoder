@@ -1,7 +1,8 @@
-import { ThemeDetail } from "api/commonSettingApi";
-import { darkenColor, isDarkColor, lightenColor, toHex } from "lowcoder-design";
-import { trans } from "i18n";
-import { StyleConfigType } from "./styleControl";
+import {ThemeDetail} from "api/commonSettingApi";
+import {darkenColor, isDarkColor, lightenColor, toHex} from "lowcoder-design";
+import {trans} from "i18n";
+import {StyleConfigType} from "./styleControl";
+import { defaultTheme } from "@lowcoder-ee/constants/themeConstants";
 
 type SupportPlatform = "pc" | "mobile";
 
@@ -10,9 +11,16 @@ type CommonColorConfig = {
   readonly label: string;
   readonly platform?: SupportPlatform; // support all if undefined
 };
+
 export type SimpleColorConfig = CommonColorConfig & {
   readonly color: string;
 };
+
+export type LineHeightConfig = CommonColorConfig & {
+  readonly lineHeight: string; // Define the lineHeight property
+};
+
+
 export type RadiusConfig = CommonColorConfig & {
   readonly radius: string;
 };
@@ -21,27 +29,208 @@ export type BorderWidthConfig = CommonColorConfig & {
   readonly borderWidth: string;
 };
 
+export type RotationConfig = CommonColorConfig & {
+  readonly rotation: string;
+};
+
+export type BoxShadowConfig = CommonColorConfig & {
+  readonly boxShadow: string;
+};
+
+export type BoxShadowColorConfig = CommonColorConfig & {
+  readonly boxShadowColor: string;
+};
+
+export type ChartBackgroundColorConfig = CommonColorConfig & {
+  readonly chartBackgroundColor: string;
+};
+export type ChartGradientColorConfig = CommonColorConfig & {
+  readonly chartGradientColor: string;
+};
+export type ChartShadowColorConfig = CommonColorConfig & {
+  readonly chartShadowColor: string;
+};
+export type ChartBorderColorConfig = CommonColorConfig & {
+  readonly chartBorderColor: string;
+};
+export type ChartTextColorConfig = CommonColorConfig & {
+  readonly chartTextColor: string;
+};
+
+export type AnimationIterationCountConfig = CommonColorConfig & {
+  readonly animationIterationCount: string;
+};
+
+export type OpacityConfig = CommonColorConfig & {
+  readonly opacity: string;
+};
+
+export type AnimationConfig = CommonColorConfig & {
+  readonly animation: string;
+};
+
+export type AnimationDelayConfig = CommonColorConfig & {
+  readonly animationDelay: string;
+};
+
+export type AnimationDurationConfig = CommonColorConfig & {
+  readonly animationDuration: string;
+};
+
+export type BackgroundImageConfig = CommonColorConfig & {
+  readonly backgroundImage: string;
+};
+export type BackgroundImageRepeatConfig = CommonColorConfig & {
+  readonly backgroundImageRepeat: string;
+};
+export type BackgroundImageSizeConfig = CommonColorConfig & {
+  readonly backgroundImageSize: string;
+};
+export type BackgroundImagePositionConfig = CommonColorConfig & {
+  readonly backgroundImagePosition: string;
+};
+export type BackgroundImageOriginConfig = CommonColorConfig & {
+  readonly backgroundImageOrigin: string;
+};
+
+export type HeaderBackgroundImageConfig = CommonColorConfig & {
+  readonly headerBackgroundImage: string;
+};
+export type HeaderBackgroundImageRepeatConfig = CommonColorConfig & {
+  readonly headerBackgroundImageRepeat: string;
+};
+export type HeaderBackgroundImageSizeConfig = CommonColorConfig & {
+  readonly headerBackgroundImageSize: string;
+};
+export type HeaderBackgroundImagePositionConfig = CommonColorConfig & {
+  readonly headerBackgroundImagePosition: string;
+};
+export type HeaderBackgroundImageOriginConfig = CommonColorConfig & {
+  readonly headerBackgroundImageOrigin: string;
+};
+
+export type SiderBackgroundImageConfig = CommonColorConfig & {
+  readonly siderBackgroundImage: string;
+};
+export type SiderBackgroundImageRepeatConfig = CommonColorConfig & {
+  readonly siderBackgroundImageRepeat: string;
+};
+export type SiderBackgroundImageSizeConfig = CommonColorConfig & {
+  readonly siderBackgroundImageSize: string;
+};
+export type SiderBackgroundImagePositionConfig = CommonColorConfig & {
+  readonly siderBackgroundImagePosition: string;
+};
+export type SiderBackgroundImageOriginConfig = CommonColorConfig & {
+  readonly siderBackgroundImageOrigin: string;
+};
+
+export type FooterBackgroundImageConfig = CommonColorConfig & {
+  readonly footerBackgroundImage: string;
+};
+export type FooterBackgroundImageRepeatConfig = CommonColorConfig & {
+  readonly footerBackgroundImageRepeat: string;
+};
+export type FooterBackgroundImageSizeConfig = CommonColorConfig & {
+  readonly footerBackgroundImageSize: string;
+};
+export type FooterBackgroundImagePositionConfig = CommonColorConfig & {
+  readonly footerBackgroundImagePosition: string;
+};
+export type FooterBackgroundImageOriginConfig = CommonColorConfig & {
+  readonly footerBackgroundImageOrigin: string;
+};
+
 export type TextSizeConfig = CommonColorConfig & {
   readonly textSize: string;
 };
 
-export type ContainerHeaderPaddigConfig = CommonColorConfig & {
-  readonly containerheaderpadding: string;
+export type TextWeightConfig = CommonColorConfig & {
+  readonly textWeight: string;
 };
 
-export type ContainerBodyPaddigConfig = CommonColorConfig & {
-  readonly containerbodypadding: string;
+export type FontFamilyConfig = CommonColorConfig & {
+  readonly fontFamily: string;
 };
 
-export type ContainerFooterPaddigConfig = CommonColorConfig & {
-  readonly containerfooterpadding: string;
+export type FontStyleConfig = CommonColorConfig & {
+  readonly fontStyle: string;
 };
 
-export type MarginConfig = CommonColorConfig & {	
-  readonly margin: string;	
-};	
-export type PaddingConfig = CommonColorConfig & {	
-  readonly padding: string;	
+export type borderStyleConfig = CommonColorConfig & {
+  readonly borderStyle: string;
+};
+
+export type ContainerHeaderPaddingConfig = CommonColorConfig & {
+  readonly containerHeaderPadding: string;
+};
+
+export type ContainerSiderPaddingConfig = CommonColorConfig & {
+  readonly containerSiderPadding: string;
+};
+
+export type ContainerBodyPaddingConfig = CommonColorConfig & {
+  readonly containerBodyPadding: string;
+};
+
+export type ContainerFooterPaddingConfig = CommonColorConfig & {
+  readonly containerFooterPadding: string;
+};
+
+export type MarginConfig = CommonColorConfig & {
+  readonly margin: string;
+};
+
+export type DirectionConfig = CommonColorConfig & {
+  readonly direction: string;
+};
+
+export type ChartOpacityConfig = CommonColorConfig & {
+  readonly chartOpacity: string;
+};
+
+export type ChartBoxShadowConfig = CommonColorConfig & {
+  readonly chartBoxShadow: string;
+};
+
+export type ChartBorderStyleConfig = CommonColorConfig & {
+  readonly chartBorderStyle: string;
+};
+
+export type ChartBorderRadiusConfig = CommonColorConfig & {
+  readonly chartBorderRadius: string;
+};
+
+export type ChartBorderWidthConfig = CommonColorConfig & {
+  readonly chartBorderWidth: string;
+};
+
+export type ChartTextSizeConfig = CommonColorConfig & {
+  readonly chartTextSize: string;
+};
+
+export type ChartTextWeightConfig = CommonColorConfig & {
+  readonly chartTextWeight: string;
+};
+
+export type ChartFontFamilyConfig = CommonColorConfig & {
+  readonly chartFontFamily: string;
+};
+
+export type ChartFontStyleConfig = CommonColorConfig & {
+  readonly chartFontStyle: string;
+};
+
+export type PaddingConfig = CommonColorConfig & {
+  readonly padding: string;
+};
+
+export type TextTransformConfig = CommonColorConfig & {
+  readonly textTransform: string;
+};
+
+export type TextDecorationConfig = CommonColorConfig & {
+  readonly textDecoration: string;
 };
 
 export type DepColorConfig = CommonColorConfig & {
@@ -50,20 +239,71 @@ export type DepColorConfig = CommonColorConfig & {
   readonly depType?: DEP_TYPE;
   transformer: (color: string, ...rest: string[]) => string;
 };
-export type SingleColorConfig = SimpleColorConfig | DepColorConfig | RadiusConfig | BorderWidthConfig | TextSizeConfig | MarginConfig | PaddingConfig | ContainerHeaderPaddigConfig | ContainerFooterPaddigConfig | ContainerBodyPaddigConfig;
 
-export const defaultTheme: ThemeDetail = {
-  primary: "#3377FF",
-  textDark: "#222222",
-  textLight: "#FFFFFF",
-  canvas: "#F5F5F6",
-  primarySurface: "#FFFFFF",
-  borderRadius: "4px",
-  margin: "3px",	
-  padding: "3px",
-  gridColumns: "24",
-  textSize: "14px",
-};
+export type SingleColorConfig =
+  | SimpleColorConfig
+  | DepColorConfig
+  | RadiusConfig
+  | BorderWidthConfig
+  | RotationConfig
+  | borderStyleConfig
+  | BackgroundImageConfig
+  | BackgroundImageRepeatConfig
+  | BackgroundImageSizeConfig
+  | BackgroundImagePositionConfig
+  | BackgroundImageOriginConfig
+  | TextSizeConfig
+  | TextWeightConfig
+  | TextTransformConfig
+  | TextDecorationConfig
+  | FontFamilyConfig
+  | FontStyleConfig
+  | MarginConfig
+  | DirectionConfig
+  | ChartOpacityConfig
+  | ChartBoxShadowConfig
+  | ChartBorderStyleConfig
+  | ChartBorderRadiusConfig
+  | ChartBorderWidthConfig
+  | ChartTextSizeConfig
+  | ChartTextWeightConfig
+  | ChartFontFamilyConfig
+  | ChartFontStyleConfig
+  | PaddingConfig
+  | ContainerHeaderPaddingConfig
+  | ContainerSiderPaddingConfig
+  | ContainerFooterPaddingConfig
+  | ContainerBodyPaddingConfig
+  | HeaderBackgroundImageConfig
+  | HeaderBackgroundImageRepeatConfig
+  | HeaderBackgroundImageSizeConfig
+  | HeaderBackgroundImagePositionConfig
+  | HeaderBackgroundImageOriginConfig
+  | FooterBackgroundImageConfig
+  | FooterBackgroundImageRepeatConfig
+  | FooterBackgroundImageSizeConfig
+  | FooterBackgroundImagePositionConfig
+  | FooterBackgroundImageOriginConfig
+  | SiderBackgroundImageConfig
+  | SiderBackgroundImageRepeatConfig
+  | SiderBackgroundImageSizeConfig
+  | SiderBackgroundImagePositionConfig
+  | SiderBackgroundImageOriginConfig
+  | AnimationConfig
+  | AnimationDelayConfig
+  | AnimationDurationConfig
+  | OpacityConfig
+  | BoxShadowConfig
+  | BoxShadowColorConfig
+  | AnimationIterationCountConfig
+  | LineHeightConfig
+  | ChartBackgroundColorConfig
+  | ChartGradientColorConfig
+  | ChartShadowColorConfig
+  | ChartBorderColorConfig
+  | ChartTextColorConfig
+  
+ 
 
 export const SURFACE_COLOR = "#FFFFFF";
 const SECOND_SURFACE_COLOR = "#D7D9E0";
@@ -75,8 +315,12 @@ export enum DEP_TYPE {
   SELF = "toSelf",
 }
 
-export function contrastText(color: string, textDark: string, textLight: string) {
-  return isDarkColor(color) && color !== '#00000000' ? textLight : textDark;
+export function contrastText(
+  color: string,
+  textDark: string,
+  textLight: string
+) {
+  return color && isDarkColor(color) && color !== "#00000000" ? textLight : textDark;
 }
 
 // return similar background color
@@ -110,7 +354,7 @@ export function backgroundToBorder(color: string) {
   return darkenColor(color, 0.03);
 }
 
-// calendar background color to boder
+// calendar background color to border
 export function calendarBackgroundToBorder(color: string) {
   if (toHex(color) === SURFACE_COLOR) {
     return SECOND_SURFACE_COLOR;
@@ -144,7 +388,10 @@ export function handleToHoverRow(color: string) {
 }
 
 // return table select row background color
-export function handleToSelectedRow(color: string, primary: string = defaultTheme.primary) {
+export function handleToSelectedRow(
+  color: string,
+  primary: string = defaultTheme.primary
+) {
   if (toHex(color) === SURFACE_COLOR) {
     return `${toHex(primary)?.substring(0, 7)}16`;
   } else if (isDarkColor(color)) {
@@ -157,7 +404,10 @@ export function handleToSelectedRow(color: string, primary: string = defaultThem
 // return table header background color
 export function handleToHeadBg(color: string) {
   if (toHex(color) === SURFACE_COLOR) {
-    return "#FAFAFA";
+    return darkenColor(color, 0.06);
+  }
+  if (toHex(color) === "#000000") {
+    return SURFACE_COLOR;
   }
   if (isDarkColor(color)) {
     return darkenColor(color, 0.06);
@@ -177,7 +427,7 @@ function handleCalendarSelectColor(color: string) {
 }
 
 // return lighten color
-function handlelightenColor(color: string) {
+function handleLightenColor(color: string) {
   return lightenColor(color, 0.1);
 }
 
@@ -197,9 +447,25 @@ export function handleToCalendarToday(color: string) {
     return "#0000000c";
   }
 }
+export function getLineHeightValue(theme: ThemeDetail, value: string | number) {
+  if (typeof value === 'number') {
+    return `${value}px`;
+  } else {
+    const lineHeightValue = theme.lineHeight;
+    if (lineHeightValue) {
+      return lineHeightValue;
+    } else {
+      return value; // default line height value
+    }
+  }
+}
 
 // return calendar text
-function handleCalendarText(color: string, textDark: string, textLight: string) {
+function handleCalendarText(
+  color: string,
+  textDark: string,
+  textLight: string
+) {
   return isDarkColor(color) ? textLight : lightenColor(textDark, 0.1);
 }
 
@@ -214,7 +480,7 @@ const TEXT = {
 const STATIC_TEXT = {
   name: "staticText",
   label: trans("style.staticText"),
-  depTheme: "canvas",
+  depTheme: "primarySurface",
   depType: DEP_TYPE.CONTRAST_TEXT,
   transformer: contrastText,
 } as const;
@@ -222,7 +488,7 @@ const STATIC_TEXT = {
 const LABEL = {
   name: "label",
   label: trans("label"),
-  depTheme: "canvas",
+  depTheme: "primarySurface",
   depType: DEP_TYPE.CONTRAST_TEXT,
   transformer: contrastText,
 } as const;
@@ -244,6 +510,84 @@ const VALIDATE = {
 
 const ACCENT_VALIDATE = [ACCENT, VALIDATE] as const;
 
+const ROTATION = {
+  name: "rotation",
+  label: "Rotation",
+  rotation: "rotation",
+} as const;
+
+const BOXSHADOW = {
+  name: "boxShadow",
+  label: trans("style.boxShadow"),
+  boxShadow: "boxShadow",
+} as const;
+
+const BOXSHADOWCOLOR = {
+  name: "boxShadowColor",
+  label: trans("style.boxShadowColor"),
+  boxShadowColor: "boxShadowColor",
+} as const;
+
+const CHARTBACKGROUNDCOLOR = {
+  name: "chartBackgroundColor",
+  label: trans("style.chartBackgroundColor"),
+  chartBackgroundColor: "chartBackgroundColor",
+} as const;
+
+const CHARTGRADIENTCOLOR = {
+  name: "chartGradientColor",
+  label: trans("style.chartGradientColor"),
+  chartGradientColor: "chartGradientColor",
+} as const;
+
+const CHARTSHADOWCOLOR = {
+  name: "chartShadowColor",
+  label: trans("style.chartShadowColor"),
+  chartShadowColor: "chartShadowColor",
+} as const;
+
+const CHARTBORDERCOLOR = {
+  name: "chartBorderColor",
+  label: trans("style.chartBorderColor"),
+  chartBorderColor: "chartBorderColor",
+} as const;
+
+const CHARTTEXTCOLOR = {
+  name: "chartTextColor",
+  label: trans("style.chartTextColor"),
+  chartTextColor: "chartTextColor",
+} as const;
+
+const OPACITY = {
+  name: "opacity",
+  label: trans("style.opacity"),
+  opacity: "opacity",
+} as const;
+
+const ANIMATION = {
+  name: "animation",
+  label: trans("style.animation"),
+  animation: "animation",
+} as const;
+
+const ANIMATIONITERATIONCOUNT = {
+  name: "animationIterationCount",
+  label: trans("style.animationIterationCount"),
+  animationIterationCount: "animationIterationCount",
+} as const;
+
+const ANIMATIONDELAY = {
+  name: "animationDelay",
+  label: trans("style.animationDelay"),
+  animationDelay: "animationDelay",
+} as const;
+
+const ANIMATIONDURATION = {
+  name: "animationDuration",
+  label: trans("style.animationDuration"),
+  animationDuration: "animationDuration",
+} as const;
+
 const BORDER = {
   name: "border",
   label: trans("style.border"),
@@ -254,7 +598,7 @@ const BORDER = {
 const RADIUS = {
   name: "radius",
   label: trans("style.borderRadius"),
-  radius: "borderRadius",
+  radius: "radius",
 } as const;
 
 const BORDER_WIDTH = {
@@ -263,41 +607,185 @@ const BORDER_WIDTH = {
   borderWidth: "borderWidth",
 } as const;
 
-const MARGIN = {	
-  name: "margin",	
-  label: trans("style.margin"),	
-  margin: "margin",	
-} as const;	
-
-const PADDING = {	
-  name: "padding",	
-  label: trans("style.padding"),	
-  padding: "padding",	
+const BACKGROUND_IMAGE = {
+  name: "backgroundImage",
+  label: trans("style.backgroundImage"),
+  backgroundImage: "backgroundImage",
 } as const;
 
-const TEXT_SIZE = {	
+const BACKGROUND_IMAGE_REPEAT = {
+  name: "backgroundImageRepeat",
+  label: trans("style.backgroundImageRepeat"),
+  backgroundImageRepeat: "backgroundImageRepeat",
+} as const;
+
+const BACKGROUND_IMAGE_SIZE = {
+  name: "backgroundImageSize",
+  label: trans("style.backgroundImageSize"),
+  backgroundImageSize: "backgroundImageSize",
+} as const;
+
+const BACKGROUND_IMAGE_POSITION = {
+  name: "backgroundImagePosition",
+  label: trans("style.backgroundImagePosition"),
+  backgroundImagePosition: "backgroundImagePosition",
+} as const;
+
+const BACKGROUND_IMAGE_ORIGIN = {
+  name: "backgroundImageOrigin",
+  label: trans("style.backgroundImageOrigin"),
+  backgroundImageOrigin: "backgroundImageOrigin",
+} as const;
+
+const LINE_HEIGHT = {
+  name: "lineHeight",
+  label: trans("style.lineHeight"),
+  lineHeight: "lineHeight",
+} as const;
+
+const MARGIN = {
+  name: "margin",
+  label: trans("style.margin"),
+  margin: "margin",
+} as const;
+
+const DIRECTION = {
+  name: "direction",
+  label: trans("style.direction"),
+  direction: "direction",
+} as const;
+
+const CHARTOPACITY = {
+  name: "chartOpacity",
+  label: trans("style.opacity"),
+  chartOpacity: "chartOpacity",
+} as const;
+
+const CHARTBOXSHADOW = {
+  name: "chartBoxShadow",
+  label: trans("style.boxShadow"),
+  chartBoxShadow: "chartBoxShadow",
+} as const;
+
+const CHARTBORDERSTYLE = {
+  name: "chartBorderStyle",
+  label: trans("style.borderStyle"),
+  chartBorderStyle: "chartBorderStyle",
+} as const;
+
+const CHARTBORDERRADIUS = {
+  name: "chartBorderRadius",
+  label: trans("style.borderRadius"),
+  chartBorderRadius: "chartBorderRadius",
+} as const;
+
+const CHARTBORDERWIDTH = {
+  name: "chartBorderWidth",
+  label: trans("style.borderWidth"),
+  chartBorderWidth: "chartBorderWidth",
+} as const;
+
+const CHARTTEXTSIZE = {
+  name: "chartTextSize",
+  label: trans("style.textSize"),
+  chartTextSize: "chartTextSize",
+} as const;
+
+const CHARTTEXTWEIGHT = {
+  name: "chartTextWeight",
+  label: trans("style.textWeight"),
+  chartTextWeight: "chartTextWeight",
+} as const;
+
+const CHARTFONTFAMILY = {
+  name: "chartFontFamily",
+  label: trans("style.fontFamily"),
+  chartFontFamily: "chartFontFamily",
+} as const;
+
+const CHARTFONTSTYLE = {
+  name: "chartFontStyle",
+  label: trans("style.fontStyle"),
+  chartFontStyle: "chartFontStyle",
+} as const;
+
+const PADDING = {
+  name: "padding",
+  label: trans("style.padding"),
+  padding: "padding",
+} as const;
+
+const TEXT_SIZE = {
   name: "textSize",
-  label: trans("style.textSize"),	
-  textSize: "textSize",	
+  label: trans("style.textSize"),
+  textSize: "textSize",
 } as const;
 
-const CONTAINERHEADERPADDING = {	
-  name: "containerheaderpadding",	
-  label: trans("style.containerheaderpadding"),	
-  containerheaderpadding: "padding",	
+const TEXT_WEIGHT = {
+  name: "textWeight",
+  label: trans("style.textWeight"),
+  textWeight: "textWeight",
 } as const;
 
-const CONTAINERFOOTERPADDING = {	
-  name: "containerfooterpadding",	
-  label: trans("style.containerfooterpadding"),	
-  containerfooterpadding: "padding",	
+const CHECKBOX_HOVER_BACKGROUND_COLOR = {
+  name: "hoverBackground",
+  label: trans("style.hoverBackground"),
+  hoverBackground: "hoverBackground",
+  // color: SECOND_SURFACE_COLOR,
+}
+
+const FONT_FAMILY = {
+  name: "fontFamily",
+  label: trans("style.fontFamily"),
+  fontFamily: "fontFamily",
 } as const;
 
+const FONT_STYLE = {
+  name: "fontStyle",
+  label: trans("style.fontStyle"),
+  fontStyle: "fontStyle",
+} as const;
 
-const CONTAINERBODYPADDING = {	
-  name: "containerbodypadding",	
-  label: trans("style.containerbodypadding"),	
-  containerbodypadding: "padding",	
+const CONTAINER_HEADER_PADDING = {
+  name: "containerHeaderPadding",
+  label: trans("style.containerHeaderPadding"),
+  containerHeaderPadding: "padding",
+} as const;
+
+const CONTAINER_SIDER_PADDING = {
+  name: "containerSiderPadding",
+  label: trans("style.containerSiderPadding"),
+  containerSiderPadding: "padding",
+} as const;
+
+const CONTAINER_FOOTER_PADDING = {
+  name: "containerFooterPadding",
+  label: trans("style.containerFooterPadding"),
+  containerFooterPadding: "padding",
+} as const;
+
+const CONTAINER_BODY_PADDING = {
+  name: "containerBodyPadding",
+  label: trans("style.containerBodyPadding"),
+  containerBodyPadding: "padding",
+} as const;
+
+const TEXT_TRANSFORM = {
+  name: "textTransform",
+  label: trans("style.textTransform"),
+  textTransform: "textTransform",
+} as const;
+
+const TEXT_DECORATION = {
+  name: "textDecoration",
+  label: trans("style.textDecoration"),
+  textDecoration: "textDecoration",
+} as const;
+
+const BORDER_STYLE = {
+  name: "borderStyle",
+  label: trans("style.borderStyle"),
+  borderStyle: "borderStyle",
 } as const;
 
 const getStaticBorder = (color: string = SECOND_SURFACE_COLOR) =>
@@ -305,7 +793,7 @@ const getStaticBorder = (color: string = SECOND_SURFACE_COLOR) =>
     name: "border",
     label: trans("style.border"),
     color,
-  } as const);
+  }) as const;
 
 const HEADER_BACKGROUND = {
   name: "headerBackground",
@@ -315,7 +803,58 @@ const HEADER_BACKGROUND = {
   transformer: toSelf,
 } as const;
 
-const BG_STATIC_BORDER_RADIUS = [getBackground(), getStaticBorder(), RADIUS] as const;
+const SIDER_BACKGROUND = {
+  name: "siderBackground",
+  label: trans("style.siderBackground"),
+  depName: "background",
+  depType: DEP_TYPE.SELF,
+  transformer: toSelf,
+} as const;
+
+const BG_STATIC_BORDER_RADIUS = [
+  getBackground(),
+  getStaticBorder(),
+  RADIUS,
+] as const;
+
+const STYLING_FIELDS_SEQUENCE = [
+  MARGIN,
+  PADDING,
+  TEXT,
+  TEXT_TRANSFORM,
+  TEXT_DECORATION,
+  TEXT_SIZE,
+  TEXT_WEIGHT,
+  FONT_FAMILY,
+  FONT_STYLE,
+  BORDER,
+  BORDER_STYLE,
+  RADIUS,
+  BORDER_WIDTH,
+  ROTATION,
+  LINE_HEIGHT
+];
+
+const STYLING_FIELDS_CONTAINER_SEQUENCE = [
+  MARGIN,
+  PADDING,
+  BORDER,
+  BORDER_STYLE,
+  RADIUS,
+  BORDER_WIDTH,
+  OPACITY,
+  BOXSHADOW,
+  BOXSHADOWCOLOR,
+  ROTATION,
+  LINE_HEIGHT
+];
+
+export const AnimationStyle = [
+  ANIMATION,
+  ANIMATIONDELAY,
+  ANIMATIONDURATION,
+  ANIMATIONITERATIONCOUNT,
+] as const;
 
 const FILL = {
   name: "fill",
@@ -337,15 +876,20 @@ const SUCCESS = {
   color: SUCCESS_COLOR,
 } as const;
 
-function getStaticBgBorderRadiusByBg(background: string, platform?: SupportPlatform) {
+function getStaticBgBorderRadiusByBg(
+  background: string,
+  platform?: SupportPlatform
+) {
   return [
     getStaticBackground(background),
-    platform ? { ...BORDER, platform } : BORDER,
-    platform ? { ...RADIUS, platform } : RADIUS,
+    platform ? {...BORDER, platform} : BORDER,
+    platform ? {...RADIUS, platform} : RADIUS,
   ] as const;
 }
 
-function getBgBorderRadiusByBg(background: keyof ThemeDetail = "primarySurface") {
+function getBgBorderRadiusByBg(
+  background: keyof ThemeDetail = "primarySurface"
+) {
   return [getBackground(background), BORDER, RADIUS] as const;
 }
 
@@ -353,6 +897,16 @@ function getBackground(depTheme: keyof ThemeDetail = "primarySurface") {
   return {
     name: "background",
     label: trans("style.background"),
+    depTheme: depTheme,
+    depType: DEP_TYPE.SELF,
+    transformer: toSelf,
+  } as const;
+}
+
+function getGradientBackground(depTheme: keyof ThemeDetail = "primarySurface") {
+  return {
+    name: "gradientBackground",
+    label: trans("style.gradientBackground"),
     depTheme: depTheme,
     depType: DEP_TYPE.SELF,
     transformer: toSelf,
@@ -367,21 +921,57 @@ function getStaticBackground(color: string) {
   } as const;
 }
 
-export const ButtonStyle = [...getBgBorderRadiusByBg("primary"), TEXT, MARGIN, PADDING] as const;
+function replaceAndMergeMultipleStyles(
+  originalArray: any[],
+  styleToReplace: string,
+  replacingStyles: any[]
+): any[] {
+  let temp = [];
+  let foundIndex = originalArray.findIndex(
+    (element) => element.name === styleToReplace
+  );
+
+  if (foundIndex !== -1) {
+    let elementsBeforeFoundIndex = originalArray.filter(
+      (item, index) => index < foundIndex
+    );
+    let elementsAfterFoundIndex = originalArray.filter(
+      (item, index) => index > foundIndex
+    );
+    temp = [
+      ...elementsBeforeFoundIndex,
+      ...replacingStyles,
+      ...elementsAfterFoundIndex,
+    ];
+  } else temp = [...originalArray];
+
+  return temp;
+}
+
+export const ButtonStyle = [
+  getBackground('primary'),
+  ...STYLING_FIELDS_SEQUENCE.filter(style=>style.name!=='lineHeight'),
+] as const;
+
+export const DropdownStyle = [
+  getBackground('primary'),
+  ...STYLING_FIELDS_SEQUENCE.filter(style=>style.name!=='rotation'),
+] as const;
 
 export const ToggleButtonStyle = [
   getBackground("canvas"),
-  TEXT,
-  {
-    name: "border",
-    label: trans("style.border"),
-    depName: "text",
-    depType: DEP_TYPE.SELF,
-    transformer: toSelf,
-  },
-  RADIUS,
-  MARGIN,	
-  PADDING,
+  ...STYLING_FIELDS_SEQUENCE.map((style) => {
+    if (style.name === "border") {
+      return {
+        ...style,
+        depType: DEP_TYPE.SELF,
+        transformer: toSelf,
+      };
+    }
+    return {
+      ...style,
+    };
+  }),
 ] as const;
 
 export const TextStyle = [
@@ -392,10 +982,7 @@ export const TextStyle = [
     depType: DEP_TYPE.SELF,
     transformer: toSelf,
   },
-  TEXT,
-  BORDER,
-  MARGIN,	
-  PADDING,
+  ...STYLING_FIELDS_SEQUENCE,
   {
     name: "links",
     label: trans("style.links"),
@@ -403,41 +990,207 @@ export const TextStyle = [
     depType: DEP_TYPE.SELF,
     transformer: toSelf,
   },
-  RADIUS,
-  BORDER_WIDTH
 ] as const;
 
-export const MarginStyle = [	
-  {	
-    name: "margin",	
-    label: trans("style.margin"),	
-    margin: "margin",	
-  },	
-];	
+export const TextContainerStyle = [
+  {
+    name: "background",
+    label: trans("style.background"),
+    depTheme: "canvas",
+    depType: DEP_TYPE.SELF,
+    transformer: toSelf,
+  },
+  ...STYLING_FIELDS_SEQUENCE.filter(style=>style.name!=='rotation'),
+  {
+    name: "links",
+    label: trans("style.links"),
+    depTheme: "primary",
+    depType: DEP_TYPE.SELF,
+    transformer: toSelf,
+  },
+] as const;
 
+export const MarginStyle = [
+  {
+    name: "margin",
+    label: trans("style.margin"),
+    margin: "margin",
+  },
+];
 
 export const ContainerStyle = [
-  ...BG_STATIC_BORDER_RADIUS,
+  // ...BG_STATIC_BORDER_RADIUS,
+  getStaticBorder(),
+  // ...STYLING_FIELDS_SEQUENCE.filter((style) => style.name !== "border"),
+  getBackground(),
+  RADIUS,
+  BORDER_WIDTH,
+  BORDER_STYLE,
+  MARGIN,
+  PADDING,
+  {
+    name: "backgroundImage",
+    label: trans("style.backgroundImage"),
+    backgroundImage: "backgroundImage",
+  },
+  {
+    name: "backgroundImageRepeat",
+    label: trans("style.backgroundImageRepeat"),
+    backgroundImageRepeat: "backgroundImageRepeat",
+  },
+  {
+    name: "backgroundImageSize",
+    label: trans("style.backgroundImageSize"),
+    backgroundImageSize: "backgroundImageSize",
+  },
+  {
+    name: "backgroundImagePosition",
+    label: trans("style.backgroundImagePosition"),
+    backgroundImagePosition: "backgroundImagePosition",
+  },
+  {
+    name: "backgroundImageOrigin",
+    label: trans("style.backgroundImageOrigin"),
+    backgroundImageOrigin: "backgroundImageOrigin",
+  },
+] as const;
+
+export const ContainerHeaderStyle = [
+  CONTAINER_HEADER_PADDING,
   HEADER_BACKGROUND,
   {
-    name: "footerBackground",
-    label: trans("style.footerBackground"),
+    name: "headerBackgroundImage",
+    label: trans("style.backgroundImage"),
+    headerBackgroundImage: "headerBackgroundImage",
+  },
+  {
+    name: "headerBackgroundImageRepeat",
+    label: trans("style.backgroundImageRepeat"),
+    headerBackgroundImageRepeat: "headerBackgroundImageRepeat",
+  },
+  {
+    name: "headerBackgroundImageSize",
+    label: trans("style.backgroundImageSize"),
+    headerBackgroundImageSize: "headerBackgroundImageSize",
+  },
+  {
+    name: "headerBackgroundImagePosition",
+    label: trans("style.backgroundImagePosition"),
+    headerBackgroundImagePosition: "headerBackgroundImagePosition",
+  },
+  {
+    name: "headerBackgroundImageOrigin",
+    label: trans("style.backgroundImageOrigin"),
+    headerBackgroundImageOrigin: "headerBackgroundImageOrigin",
+  },
+] as const;
+
+export const ContainerSiderStyle = [
+  CONTAINER_SIDER_PADDING,
+  SIDER_BACKGROUND,
+  {
+    name: "siderBackgroundImage",
+    label: trans("style.backgroundImage"),
+    siderBackgroundImage: "siderBackgroundImage",
+  },
+  {
+    name: "siderBackgroundImageRepeat",
+    label: trans("style.backgroundImageRepeat"),
+    siderBackgroundImageRepeat: "siderBackgroundImageRepeat",
+  },
+  {
+    name: "siderBackgroundImageSize",
+    label: trans("style.backgroundImageSize"),
+    siderBackgroundImageSize: "siderBackgroundImageSize",
+  },
+  {
+    name: "siderBackgroundImagePosition",
+    label: trans("style.backgroundImagePosition"),
+    siderBackgroundImagePosition: "siderBackgroundImagePosition",
+  },
+  {
+    name: "siderBackgroundImageOrigin",
+    label: trans("style.backgroundImageOrigin"),
+    siderBackgroundImageOrigin: "siderBackgroundImageOrigin",
+  },
+] as const;
+
+export const ContainerBodyStyle = [
+  CONTAINER_BODY_PADDING,
+  {
+    name: "background",
+    label: trans("style.background"),
     depName: "background",
     depType: DEP_TYPE.SELF,
     transformer: toSelf,
   },
-  MARGIN,	
-  PADDING,
-  CONTAINERHEADERPADDING,
-  CONTAINERFOOTERPADDING,
-  CONTAINERBODYPADDING
+  {
+    name: "backgroundImage",
+    label: trans("style.backgroundImage"),
+    backgroundImage: "backgroundImage",
+  },
+  {
+    name: "backgroundImageRepeat",
+    label: trans("style.backgroundImageRepeat"),
+    backgroundImageRepeat: "backgroundImageRepeat",
+  },
+  {
+    name: "backgroundImageSize",
+    label: trans("style.backgroundImageSize"),
+    backgroundImageSize: "backgroundImageSize",
+  },
+  {
+    name: "backgroundImagePosition",
+    label: trans("style.backgroundImagePosition"),
+    backgroundImagePosition: "backgroundImagePosition",
+  },
+  {
+    name: "backgroundImageOrigin",
+    label: trans("style.backgroundImageOrigin"),
+    backgroundImageOrigin: "backgroundImageOrigin",
+  },
+] as const;
+
+export const ContainerFooterStyle = [
+  CONTAINER_FOOTER_PADDING,
+  {
+    name: "footerBackground",
+    label: trans("style.background"),
+    depName: "background",
+    depType: DEP_TYPE.SELF,
+    transformer: toSelf,
+  },
+  {
+    name: "footerBackgroundImage",
+    label: trans("style.backgroundImage"),
+    footerBackgroundImage: "footerBackgroundImage",
+  },
+  {
+    name: "footerBackgroundImageRepeat",
+    label: trans("style.backgroundImageRepeat"),
+    footerBackgroundImageRepeat: "footerBackgroundImageRepeat",
+  },
+  {
+    name: "footerBackgroundImageSize",
+    label: trans("style.backgroundImageSize"),
+    footerBackgroundImageSize: "footerBackgroundImageSize",
+  },
+  {
+    name: "footerBackgroundImagePosition",
+    label: trans("style.backgroundImagePosition"),
+    footerBackgroundImagePosition: "footerBackgroundImagePosition",
+  },
+  {
+    name: "footerBackgroundImageOrigin",
+    label: trans("style.backgroundImageOrigin"),
+    footerBackgroundImageOrigin: "footerBackgroundImageOrigin",
+  },
 ] as const;
 
 export const SliderStyle = [
-  LABEL,
   FILL,
   {
-    name: "thumbBoder",
+    name: "thumbBorder",
     label: trans("style.thumbBorder"),
     depName: "fill",
     depType: DEP_TYPE.SELF,
@@ -449,21 +1202,135 @@ export const SliderStyle = [
     color: SURFACE_COLOR,
   },
   TRACK,
-  MARGIN,	
+  MARGIN,
   PADDING,
 ] as const;
 
 export const InputLikeStyle = [
-  LABEL,
-  ...getStaticBgBorderRadiusByBg(SURFACE_COLOR),
-  TEXT,
-  MARGIN,	
-  PADDING,
+  getStaticBackground(SURFACE_COLOR),
+  BOXSHADOW,
+  BOXSHADOWCOLOR,
+  ...STYLING_FIELDS_SEQUENCE.filter((style)=>style.name!=='rotation' && style.name!=='lineHeight'),
   ...ACCENT_VALIDATE,
 ] as const;
 
-export const RatingStyle = [
+// added by Mousheng
+
+export const ColorPickerStyle = [
   LABEL,
+  getStaticBackground(SURFACE_COLOR),
+  ...STYLING_FIELDS_SEQUENCE.filter(style => style.name!=='rotation'),
+  ...ACCENT_VALIDATE,
+] as const;
+
+export const AvatarStyle = [
+  {
+    name: "background",
+    label: trans("avatarComp.avatarBackground"),
+    color: "#bfbfbf",
+  },
+  FILL,
+] as const;
+
+export const avatarContainerStyle = [
+  getStaticBackground(SURFACE_COLOR),
+  ...STYLING_FIELDS_CONTAINER_SEQUENCE.filter(style=>style.name!=='rotation'),
+] as const;
+
+export const avatarLabelStyle = [
+  getStaticBackground(SURFACE_COLOR),
+  ...STYLING_FIELDS_SEQUENCE.filter((style) => style.name !== 'rotation'),
+] as const;
+
+export const avatarGroupStyle = [
+  {
+    name: "fill",
+    label: trans("style.fill"),
+    color: "#FFFFFF",
+  },
+  getBackground("primary"),
+] as const;
+
+export const BadgeStyle = [
+  {
+    name: "badgeColor",
+    label: trans("floatButton.badgeColor"),
+    color: "#ff4d4f",
+  },
+] as const;
+
+export const FloatButtonStyle = [
+  getStaticBackground(SURFACE_COLOR),
+  BORDER,
+  BORDER_STYLE,
+  BORDER_WIDTH,
+] as const;
+
+export const TransferStyle = [
+  getStaticBackground(SURFACE_COLOR),
+  ...STYLING_FIELDS_CONTAINER_SEQUENCE.filter(style=>style.name!=='rotation'),
+] as const;
+
+export const CardStyle = [
+  getStaticBackground("#ffffff"),
+  {
+    name: "IconColor",
+    label: trans("card.IconColor"),
+    color: "#000000",
+  },
+  {
+    name: "activateColor",
+    label: trans("card.hoverColor"),
+    depTheme: "primary",
+    depType: DEP_TYPE.SELF,
+    transformer: toSelf,
+  },
+  CONTAINER_BODY_PADDING,
+  ...STYLING_FIELDS_CONTAINER_SEQUENCE,
+] as const;
+
+export const CardHeaderStyle = [
+  getStaticBackground(SURFACE_COLOR),
+  ...STYLING_FIELDS_SEQUENCE,
+] as const;
+
+export const timerStyle = [
+  getBackground("primarySurface"),
+  ...STYLING_FIELDS_SEQUENCE,
+] as const;
+
+export const startButtonStyle = [
+  getBackground("primarySurface"),
+  ...STYLING_FIELDS_SEQUENCE,
+] as const;
+
+// end
+
+export const LabelStyle = [
+  ...replaceAndMergeMultipleStyles([...InputLikeStyle], "text", [LABEL]).filter(
+    (style) => style.name !== "radius" && style.name !== "background" && style.name!=='rotation' && style.name !== "boxShadow"&&style.name!=='boxShadowColor'
+    &&style.name!=='lineHeight'
+  ),
+];
+
+export const InputFieldStyle = [
+  getBackground(),
+  getStaticBorder(),
+ ...STYLING_FIELDS_CONTAINER_SEQUENCE.filter(
+    (style) =>!["border", "lineHeight"].includes(style.name)
+  ),
+] as const;
+
+export const SignatureContainerStyle = [
+  getBackground(),
+  getStaticBorder(),
+  ...STYLING_FIELDS_CONTAINER_SEQUENCE.filter(
+    (style) => ['border'].includes(style.name) === false&&style.name!=='rotation'
+  ),
+  // ...STYLING_FIELDS_CONTAINER_SEQUENCE,
+] as const;
+
+export const RatingStyle = [
   {
     name: "checked",
     label: trans("style.checked"),
@@ -474,12 +1341,11 @@ export const RatingStyle = [
     label: trans("style.unchecked"),
     color: SECOND_SURFACE_COLOR,
   },
-  MARGIN,	
+  MARGIN,
   PADDING,
 ] as const;
 
 export const SwitchStyle = [
-  LABEL,
   {
     name: "handle",
     label: trans("style.handle"),
@@ -498,25 +1364,23 @@ export const SwitchStyle = [
     depType: DEP_TYPE.SELF,
     transformer: toSelf,
   },
-  MARGIN,	
+  MARGIN,
   PADDING,
 ] as const;
 
 export const SelectStyle = [
-  LABEL,
-  ...getStaticBgBorderRadiusByBg(SURFACE_COLOR, "pc"),
-  TEXT,
-  MARGIN,	
-  PADDING,
+  ...replaceAndMergeMultipleStyles(STYLING_FIELDS_SEQUENCE.filter(style=>style.name!=='rotation' && style.name !== 'lineHeight'), "border", [
+    ...getStaticBgBorderRadiusByBg(SURFACE_COLOR, "pc"),
+  ]),
+  BOXSHADOW,
+  BOXSHADOWCOLOR,
   ...ACCENT_VALIDATE,
 ] as const;
 
 const multiSelectCommon = [
-  LABEL,
-  ...getStaticBgBorderRadiusByBg(SURFACE_COLOR, "pc"),
-  TEXT,
-  MARGIN,	
-  PADDING,
+  ...replaceAndMergeMultipleStyles(STYLING_FIELDS_SEQUENCE.filter(style=>style.name!=='rotation' && style.name !== 'lineHeight'), "border", [
+    ...getStaticBgBorderRadiusByBg(SURFACE_COLOR, "pc"),
+  ]),
   {
     name: "tags",
     label: trans("style.tags"),
@@ -543,38 +1407,61 @@ export const MultiSelectStyle = [
     transformer: toSelf,
     platform: "pc",
   },
+  BOXSHADOW,
+  BOXSHADOWCOLOR,
   ...ACCENT_VALIDATE,
 ] as const;
 
-export const TabContainerStyle = [
-  ...BG_STATIC_BORDER_RADIUS,
-  HEADER_BACKGROUND,
-  {
-    name: "tabText",
-    label: trans("style.tabText"),
-    depName: "headerBackground",
-    depType: DEP_TYPE.CONTRAST_TEXT,
-    transformer: contrastText,
-  },
-  {
-    name: "accent",
-    label: trans("style.tabAccent"),
-    depTheme: "primary",
-    depType: DEP_TYPE.SELF,
-    transformer: toSelf,
-  },
-  MARGIN,	
-  PADDING,
+export const ChildrenMultiSelectStyle = [
+  ...STYLING_FIELDS_SEQUENCE,
+  getBackground()
 ] as const;
 
-export const ModalStyle = getBgBorderRadiusByBg();
+export const TabContainerStyle = [
+  // Keep background related properties of container as STYLING_FIELDS_SEQUENCE has rest of the properties
+  ...replaceAndMergeMultipleStyles(
+    [
+      ...ContainerStyle.filter(
+        (style) =>
+          ["border", "radius", "f", "margin", "padding",'borderWidth','borderStyle'].includes(
+            style.name
+          ) === false
+      ),
+      ...STYLING_FIELDS_SEQUENCE.filter(style=>style.name!=='rotation'),
+    ],
+    "text",
+    [
+      {
+        name: "tabText",
+        label: trans("style.tabText"),
+        depName: "headerBackground",
+        depType: TEXT,
+        transformer: toSelf,
+      },
+    ]
+  ),
+  ACCENT,
+] as const;
+
+export const TabBodyStyle=[...ContainerBodyStyle] as const
+
+export const ModalStyle = [
+  ...getBgBorderRadiusByBg(),
+  BORDER_WIDTH,
+  MARGIN,
+  PADDING,
+  BACKGROUND_IMAGE,
+  BACKGROUND_IMAGE_REPEAT,
+  BACKGROUND_IMAGE_SIZE,
+  BACKGROUND_IMAGE_POSITION,
+  BACKGROUND_IMAGE_ORIGIN,
+] as const;
 
 export const CascaderStyle = [
-  LABEL,
   ...getStaticBgBorderRadiusByBg(SURFACE_COLOR, "pc"),
   TEXT,
   ACCENT,
-  MARGIN,	
+  MARGIN,
   PADDING,
 ] as const;
 
@@ -596,57 +1483,75 @@ function checkAndUncheck() {
       name: "uncheckedBorder",
       label: trans("style.uncheckedBorder"),
       depName: "uncheckedBackground",
+      color:SECOND_SURFACE_COLOR,
       transformer: backgroundToBorder,
     },
   ] as const;
 }
 
 export const CheckboxStyle = [
-  LABEL,
+  ...replaceAndMergeMultipleStyles(STYLING_FIELDS_SEQUENCE.filter(styles=>styles.name!=='rotation' && styles.name !== 'lineHeight'),"text", [
+    STATIC_TEXT,
+    VALIDATE,
+  ]).filter((style) => style.name !== "border"),
   ...checkAndUncheck(),
   {
-    name: "checked",
+    name: "checkedBorder",
     label: trans("style.checked"),
     depName: "checkedBackground",
-    depType: DEP_TYPE.CONTRAST_TEXT,
-    transformer: contrastText,
-  },
-  RADIUS,
-  STATIC_TEXT,
-  VALIDATE,
-  MARGIN,	
-  PADDING,
-] as const;
-
-export const RadioStyle = [
-  LABEL,
-  ...checkAndUncheck(),
-  {
-    name: "checked",
-    label: trans("style.checked"),
-    depName: "uncheckedBackground",
+    // depType: DEP_TYPE.CONTRAST_TEXT,
+    // transformer: contrastText,
     depType: DEP_TYPE.SELF,
     transformer: toSelf,
   },
-  STATIC_TEXT,
-  VALIDATE,
-  MARGIN,	
-  PADDING,
+  CHECKBOX_HOVER_BACKGROUND_COLOR,
+] as const;
+
+export const RadioStyle = [
+  ...replaceAndMergeMultipleStyles(STYLING_FIELDS_SEQUENCE.filter(style=>style.name!=='rotation'&& style.name !== 'lineHeight'), "text", [
+    STATIC_TEXT,
+    VALIDATE,
+  ]).filter((style) => style.name !== "border" && style.name !== "radius"),
+  ...checkAndUncheck(),
+  {
+    name: "checkedBorder",
+    label: trans("style.checked"),
+    depName: "checkedBackground",
+    depType: DEP_TYPE.CONTRAST_TEXT,
+    transformer: toSelf,
+  },
+  CHECKBOX_HOVER_BACKGROUND_COLOR,
 ] as const;
 
 export const SegmentStyle = [
-  LABEL,
+  ...STYLING_FIELDS_SEQUENCE.filter(
+    (style) => ["border", "borderWidth"].includes(style.name) === false
+  ),
+  // getStaticBorder(SECOND_SURFACE_COLOR),
+  {
+    name: "border",
+    label: trans("style.border"),
+    depName: "background",
+    transformer: backgroundToBorder,
+  },
+  {
+    name: "borderWidth",
+    label: trans("style.borderWidth"),
+    borderWidth: "borderWidth",
+  },
+
+  getStaticBackground(SURFACE_COLOR),
   {
     name: "indicatorBackground",
     label: trans("style.indicatorBackground"),
     color: SURFACE_COLOR,
   },
-  {
-    name: "background",
-    label: trans("style.background"),
-    depName: "indicatorBackground",
-    transformer: handleToSegmentBackground,
-  },
+  // {
+  //   name: "background",
+  //   label: trans("style.background"),
+  //   depName: "indicatorBackground",
+  //   transformer: toSelf,
+  // },
   {
     name: "text",
     label: trans("text"),
@@ -654,10 +1559,55 @@ export const SegmentStyle = [
     depType: DEP_TYPE.CONTRAST_TEXT,
     transformer: contrastText,
   },
-  RADIUS,
+
   VALIDATE,
-  MARGIN,	
-  PADDING,
+] as const;
+
+export const StepsStyle = [
+  {
+    name: "activeBackground",
+    label: trans("style.accent"),
+    depName: "activeBackground",
+    transformer: handleToSegmentBackground,
+  },
+  {
+    name: "titleText",
+    label: trans("title"),
+    depName: "text",
+    depType: DEP_TYPE.SELF,
+    transformer: contrastText,
+  },
+  ...STYLING_FIELDS_SEQUENCE.filter(
+    (style) =>
+      ["background", "textSize", "textDecoration"].includes(style.name) ===
+      false
+  ),
+  getBackground(),
+  {
+    name: "backgroundImage",
+    label: trans("style.backgroundImage"),
+    backgroundImage: "backgroundImage",
+  },
+  {
+    name: "backgroundImageRepeat",
+    label: trans("style.backgroundImageRepeat"),
+    backgroundImageRepeat: "backgroundImageRepeat",
+  },
+  {
+    name: "backgroundImageSize",
+    label: trans("style.backgroundImageSize"),
+    backgroundImageSize: "backgroundImageSize",
+  },
+  {
+    name: "backgroundImagePosition",
+    label: trans("style.backgroundImagePosition"),
+    backgroundImagePosition: "backgroundImagePosition",
+  },
+  {
+    name: "backgroundImageOrigin",
+    label: trans("style.backgroundImageOrigin"),
+    backgroundImageOrigin: "backgroundImageOrigin",
+  },
 ] as const;
 
 const LinkTextStyle = [
@@ -683,12 +1633,45 @@ const LinkTextStyle = [
 ] as const;
 
 export const TableStyle = [
+  MARGIN,
+  PADDING,
+  BORDER_STYLE,
+  BORDER_WIDTH,
   ...BG_STATIC_BORDER_RADIUS,
+] as const;
+
+export const TableToolbarStyle = [
+  MARGIN,
+  getBackground(),
+  getStaticBorder(),
+  {
+    name: "toolbarText",
+    label: trans("style.toolbarText"),
+    depName: "toolbarBackground",
+    depType: DEP_TYPE.CONTRAST_TEXT,
+    transformer: toSelf,
+  },
+] as const;
+
+export const TableHeaderStyle = [
+  MARGIN,
+  PADDING,
+  FONT_FAMILY,
+  FONT_STYLE,
+  TEXT,
+  // getStaticBackground(SURFACE_COLOR),
+  // getBackground("primarySurface"),
   {
     name: "headerBackground",
     label: trans("style.tableHeaderBackground"),
     depName: "background",
     transformer: handleToHeadBg,
+  },
+  getStaticBorder(),
+  {
+    name: "borderWidth",
+    label: trans("style.borderWidth"),
+    borderWidth: "borderWidth",
   },
   {
     name: "headerText",
@@ -697,23 +1680,14 @@ export const TableStyle = [
     depType: DEP_TYPE.CONTRAST_TEXT,
     transformer: contrastText,
   },
-  {
-    name: "toolbarBackground",
-    label: trans("style.toolbarBackground"),
-    depName: "background",
-    depType: DEP_TYPE.SELF,
-    transformer: toSelf,
-  },
-  {
-    name: "toolbarText",
-    label: trans("style.toolbarText"),
-    depName: "toolbarBackground",
-    depType: DEP_TYPE.CONTRAST_TEXT,
-    transformer: contrastText,
-  },
+  TEXT_SIZE,
+  TEXT_WEIGHT,
 ] as const;
 
 export const TableRowStyle = [
+  BORDER_WIDTH,
+  BORDER_STYLE,
+  ...BG_STATIC_BORDER_RADIUS,
   getBackground(),
   {
     name: "selectedRowBackground",
@@ -740,35 +1714,74 @@ export const TableRowStyle = [
 export const TableColumnStyle = [
   getStaticBackground("#00000000"),
   getStaticBorder(),
-  BORDER_WIDTH,
+  MARGIN,
   RADIUS,
   TEXT,
   TEXT_SIZE,
+  TEXT_WEIGHT,
+  FONT_FAMILY,
+  FONT_STYLE,
 ] as const;
 
-export const TableColumnLinkStyle = [
-  ...LinkTextStyle,
+export const TableColumnLinkStyle = [...LinkTextStyle] as const;
+
+export const TableSummaryRowStyle = [
+  BORDER_WIDTH,
+  BORDER_STYLE,
+  ...BG_STATIC_BORDER_RADIUS,
+  MARGIN,
+  TEXT,
+  TEXT_SIZE,
+  TEXT_WEIGHT,
+  FONT_FAMILY,
+  FONT_STYLE,
 ] as const;
 
-export const FileStyle = [...getStaticBgBorderRadiusByBg(SURFACE_COLOR), TEXT, ACCENT, MARGIN, PADDING] as const;
+export const FileStyle = [
+  // ...getStaticBgBorderRadiusByBg(SURFACE_COLOR),
+  getStaticBackground(SURFACE_COLOR),
+  ...replaceAndMergeMultipleStyles(STYLING_FIELDS_SEQUENCE, "border", [
+    getStaticBorder("#00000000"),
+  ]),
+  // TEXT, ACCENT, MARGIN, PADDING
+] as const;
 
 export const FileViewerStyle = [
   getStaticBackground("#FFFFFF"),
   getStaticBorder("#00000000"),
   RADIUS,
-  MARGIN,	
+  MARGIN,
   PADDING,
-  BORDER_WIDTH
+  BORDER_WIDTH,
 ] as const;
 
-export const IframeStyle = [getBackground(), getStaticBorder("#00000000"), RADIUS, BORDER_WIDTH, MARGIN, PADDING] as const;
+export const IframeStyle = [
+  getBackground(),
+  getStaticBorder("#00000000"),
+  RADIUS,
+  BORDER_WIDTH,
+  MARGIN,
+  PADDING,
+  ROTATION,
+] as const;
+
+export const CustomStyle = [
+  MARGIN,
+  PADDING,
+  ROTATION,
+] as const;
 
 export const DateTimeStyle = [
-  LABEL,
   ...getStaticBgBorderRadiusByBg(SURFACE_COLOR),
+  getStaticBorder(SECOND_SURFACE_COLOR),
   TEXT,
-  MARGIN,	
+  MARGIN,
   PADDING,
+  BORDER_STYLE,
+  BORDER_WIDTH,
+  BOXSHADOW,
+  BOXSHADOWCOLOR,
+  ROTATION,
   ...ACCENT_VALIDATE,
 ] as const;
 
@@ -781,63 +1794,119 @@ function handleToHoverLink(color: string) {
 }
 
 export const LinkStyle = [
-  ...LinkTextStyle,
-  MARGIN,	
-  PADDING,
-  TEXT_SIZE
+  getBackground(),
+  ...replaceAndMergeMultipleStyles(STYLING_FIELDS_SEQUENCE, "text", [
+    ...LinkTextStyle,
+  ]),
 ] as const;
 
 export const DividerStyle = [
-  {
+  /* {
     name: "color",
     label: trans("color"),
-    color: lightenColor(SECOND_SURFACE_COLOR, 0.05),
-  },
-  {
-    name: "text",
-    label: trans("text"),
-    depName: "color",
-    transformer: handleToDividerText,
-  },
-  MARGIN,	
-  PADDING,
-  TEXT_SIZE,
-  BORDER_WIDTH
+    color: darkenColor(SECOND_SURFACE_COLOR, 0.1),
+  }, */
+  ...STYLING_FIELDS_SEQUENCE.map((style) => {
+    if (style.name === "text") {
+      return {
+        name: "text",
+        label: trans("text"),
+        depName: "color",
+        transformer: handleToDividerText,
+      };
+    }
+    return style;
+  }),
 ] as const;
 
+// Hidden border and borderWidth properties as AntD doesnt allow these properties for progress bar
 export const ProgressStyle = [
-  {
-    name: "text",
-    label: trans("text"),
-    depTheme: "canvas",
-    depType: DEP_TYPE.CONTRAST_TEXT,
-    transformer: contrastText,
-  },
+  ...replaceAndMergeMultipleStyles(STYLING_FIELDS_SEQUENCE, "text", [
+    {
+      name: "text",
+      label: trans("text"),
+      depTheme: "canvas",
+      depType: DEP_TYPE.CONTRAST_TEXT,
+      transformer: contrastText,
+    },
+  ]).filter(
+    (style) =>
+      ["border", "borderWidth", "textTransform", "textDecoration"].includes(
+        style.name
+      ) === false
+  ),
   TRACK,
   FILL,
   SUCCESS,
-  MARGIN,	
-  PADDING,
 ] as const;
+
+export const CircleProgressStyle = [
+  ...ProgressStyle.filter((style) => style.name !== "radius"&&style.name !== "rotation"),
+];
 
 export const NavigationStyle = [
-  {
-    name: "text",
-    label: trans("text"),
-    depName: "background",
-    depType: DEP_TYPE.CONTRAST_TEXT,
-    transformer: contrastText,
-  },
-  ACCENT,
-  getStaticBackground("#FFFFFF00"),
-  getStaticBorder("#FFFFFF00"),
-  MARGIN,	
-  PADDING,
+  ...replaceAndMergeMultipleStyles(STYLING_FIELDS_SEQUENCE.filter(style=>style.name!=='rotation'), "text", [
+    {
+      name: "text",
+      label: trans("text"),
+      depName: "background",
+      depType: DEP_TYPE.CONTRAST_TEXT,
+      transformer: contrastText,
+    },
+    ACCENT,
+    getStaticBackground("#FFFFFF00"),
+  ]),
+  // {
+  //   name: "text",
+  //   label: trans("text"),
+  //   depName: "background",
+  //   depType: DEP_TYPE.CONTRAST_TEXT,
+  //   transformer: contrastText,
+  // },
+  // ACCENT,
+  // getStaticBackground("#FFFFFF00"),
+  // getStaticBorder("#FFFFFF00"),
+  // MARGIN,
+  // PADDING,
+  // FONT_FAMILY,
+  // FONT_STYLE,
+  // TEXT_WEIGHT,
+  // TEXT_SIZE,
+  // BORDER_WIDTH
 ] as const;
 
-export const ImageStyle = [getStaticBorder("#00000000"), RADIUS, BORDER_WIDTH, MARGIN, PADDING] as const;
+export const ImageStyle = [
+  getStaticBorder("#00000000"),
+  RADIUS,
+  BORDER_WIDTH,
+  MARGIN,
+  PADDING,
+  ROTATION
+] as const;
 
-export const ListViewStyle = BG_STATIC_BORDER_RADIUS;
+export const AudioStyle = [
+  MARGIN,
+  PADDING,
+  ROTATION,
+] as const;
+
+export const VideoStyle = [MARGIN, PADDING] as const;
+
+export const IconStyle = [
+  getStaticBackground("#00000000"),
+  getStaticBorder("#00000000"),
+  FILL,
+  RADIUS,
+  BORDER_WIDTH,
+  MARGIN,
+  PADDING,
+  ROTATION
+] as const;
+
+export const ListViewStyle = [
+  ...BG_STATIC_BORDER_RADIUS,
+  ROTATION
+] as const;
 
 export const JsonSchemaFormStyle = BG_STATIC_BORDER_RADIUS;
 
@@ -848,11 +1917,12 @@ export const QRCodeStyle = [
     label: trans("color"),
     color: "#000000",
   },
-  MARGIN,	
+  MARGIN,
   PADDING,
   BORDER,
   RADIUS,
-  BORDER_WIDTH
+  BORDER_WIDTH,
+  ROTATION
 ] as const;
 
 export const TimeLineStyle = [
@@ -863,8 +1933,8 @@ export const TimeLineStyle = [
     color: "#000000",
   },
   {
-    name: "lableColor",
-    label: trans("timeLine.lableColor"),
+    name: "labelColor",
+    label: trans("timeLine.labelColor"),
     color: "#000000",
   },
   {
@@ -872,23 +1942,51 @@ export const TimeLineStyle = [
     label: trans("timeLine.subTitleColor"),
     color: "#848484",
   },
-  MARGIN,	
+  MARGIN,
   PADDING,
-  RADIUS
+  RADIUS,
 ] as const;
 
 export const TreeStyle = [
-  LABEL,
   ...getStaticBgBorderRadiusByBg(SURFACE_COLOR),
   TEXT,
   VALIDATE,
 ] as const;
 
-export const TreeSelectStyle = [...multiSelectCommon, ...ACCENT_VALIDATE] as const;
+export const TreeSelectStyle = [
+  ...multiSelectCommon,
+  ...ACCENT_VALIDATE,
+] as const;
 
-export const DrawerStyle = [getBackground()] as const
+export const DrawerStyle = [getBackground()] as const;
 
 export const JsonEditorStyle = [LABEL] as const;
+
+export const EchartsStyle = [getBackground("primarySurface")] as const;
+
+export const EchartDefaultTextStyle = [
+  CHARTTEXTCOLOR,
+  CHARTTEXTSIZE,
+  CHARTTEXTWEIGHT,
+  CHARTFONTFAMILY,
+  CHARTFONTSTYLE,
+  CHARTSHADOWCOLOR,
+  CHARTBOXSHADOW,
+] as const;
+
+export const EchartDefaultChartStyle = [
+  getBackground("primarySurface"),
+  // CHARTBACKGROUNDCOLOR,
+  // CHARTGRADIENTCOLOR,
+  // DIRECTION,
+  // CHARTOPACITY,
+  CHARTSHADOWCOLOR,
+  CHARTBOXSHADOW,
+  CHARTBORDERCOLOR,
+  CHARTBORDERSTYLE,
+  CHARTBORDERRADIUS,
+  CHARTBORDERWIDTH,
+] as const;
 
 export const CalendarStyle = [
   getBackground("primarySurface"),
@@ -910,7 +2008,7 @@ export const CalendarStyle = [
     name: "headerBtnBackground",
     label: trans("calendar.headerBtnBackground"),
     depName: "background",
-    transformer: handlelightenColor,
+    transformer: handleLightenColor,
   },
   {
     name: "btnText",
@@ -935,7 +2033,6 @@ export const CalendarStyle = [
 ] as const;
 
 export const SignatureStyle = [
-  LABEL,
   ...getBgBorderRadiusByBg(),
   {
     name: "pen",
@@ -952,9 +2049,24 @@ export const SignatureStyle = [
     label: trans("style.footerIcon"),
     color: "#222222",
   },
-  MARGIN,	
+  MARGIN,
   PADDING,
-  BORDER_WIDTH
+  BORDER_WIDTH,
+] as const;
+
+export const EventModalStyle = [
+  getBackground("primarySurface"),
+  BORDER,
+  BORDER_WIDTH,
+  BORDER_STYLE,
+  TEXT,
+  {
+    name: "labelBackground",
+    label: trans("style.labelBackground"),
+    depTheme: "primarySurface",
+    depType: DEP_TYPE.SELF,
+    transformer: toSelf,
+  },
 ] as const;
 
 // Added by Aqib Mirza
@@ -966,10 +2078,11 @@ export const LottieStyle = [
     depType: DEP_TYPE.SELF,
     transformer: toSelf,
   },
-  MARGIN,	
+  MARGIN,
   PADDING,
+  ROTATION
 ] as const;
-/////////////////////
+
 export const CommentStyle = [
   {
     name: "background",
@@ -978,19 +2091,29 @@ export const CommentStyle = [
     depType: DEP_TYPE.SELF,
     transformer: toSelf,
   },
-  MARGIN,	
+  MARGIN,
   PADDING,
   RADIUS,
-] as const
+] as const;
+
 export const ResponsiveLayoutRowStyle = [
-  ...BG_STATIC_BORDER_RADIUS,
-  MARGIN,	
+  getBackground("canvas"),
+  getStaticBorder("transparent"),
+  RADIUS,
+  BORDER_WIDTH,
+  BORDER_STYLE,
+  MARGIN,
   PADDING,
+  ROTATION
 ] as const;
 
 export const ResponsiveLayoutColStyle = [
-  ...BG_STATIC_BORDER_RADIUS,
-  MARGIN,	
+  getBackground("canvas"),
+  getStaticBorder("transparent"),
+  RADIUS,
+  BORDER_WIDTH,
+  BORDER_STYLE,
+  MARGIN,
   PADDING,
 ] as const;
 
@@ -1010,7 +2133,7 @@ export const NavLayoutStyle = [
 
 export const NavLayoutItemStyle = [
   getBackground("primarySurface"),
-  getStaticBorder('transparent'),
+  getStaticBorder("transparent"),
   RADIUS,
   {
     name: "text",
@@ -1025,7 +2148,7 @@ export const NavLayoutItemStyle = [
 
 export const NavLayoutItemHoverStyle = [
   getBackground("canvas"),
-  getStaticBorder('transparent'),
+  getStaticBorder("transparent"),
   {
     name: "text",
     label: trans("text"),
@@ -1037,7 +2160,7 @@ export const NavLayoutItemHoverStyle = [
 
 export const NavLayoutItemActiveStyle = [
   getBackground("primary"),
-  getStaticBorder('transparent'),
+  getStaticBorder("transparent"),
   {
     name: "text",
     label: trans("text"),
@@ -1050,68 +2173,129 @@ export const NavLayoutItemActiveStyle = [
 export const CarouselStyle = [getBackground("canvas")] as const;
 
 export const RichTextEditorStyle = [
-  getStaticBorder(), 
-  getBackground("primarySurface"), 
-  RADIUS, 
-  BORDER_WIDTH
+  getStaticBorder(),
+  getBackground("primarySurface"),
+  RADIUS,
+  BORDER_WIDTH,
 ] as const;
 
+export type QRCodeStyleType = StyleConfigType<typeof QRCodeStyle>;
+export type TimeLineStyleType = StyleConfigType<typeof TimeLineStyle>;
+export type AvatarStyleType = StyleConfigType<typeof AvatarStyle>;
+export type AvatarLabelStyleType = StyleConfigType<typeof avatarLabelStyle>;
+export type AvatarContainerStyleType = StyleConfigType<
+  typeof avatarContainerStyle
+>;
+export type AvatarGroupStyleType = StyleConfigType<typeof avatarGroupStyle>;
+export type FloatButtonStyleType = StyleConfigType<typeof FloatButtonStyle>;
+export type DropdownStyleType = StyleConfigType<typeof DropdownStyle>;
+export type BadgeStyleType = StyleConfigType<typeof BadgeStyle>;
+export type TransferStyleType = StyleConfigType<typeof TransferStyle>;
+export type CardStyleType = StyleConfigType<typeof CardStyle>;
+export type CardHeaderStyleType = StyleConfigType<typeof CardHeaderStyle>;
+export type timerStyleType = StyleConfigType<typeof timerStyle>;
+export type StartButtonStyleType = StyleConfigType<typeof startButtonStyle>;
+
+export type LabelStyleType = StyleConfigType<typeof LabelStyle>;
+export type AnimationStyleType = StyleConfigType<typeof AnimationStyle>;
 export type InputLikeStyleType = StyleConfigType<typeof InputLikeStyle>;
+export type InputFieldStyleType = StyleConfigType<typeof InputFieldStyle>;
+export type SignatureContainerStyleType = StyleConfigType<typeof SignatureContainerStyle>;
+export type ColorPickerStyleType = StyleConfigType<typeof ColorPickerStyle>;
 export type ButtonStyleType = StyleConfigType<typeof ButtonStyle>;
 export type ToggleButtonStyleType = StyleConfigType<typeof ToggleButtonStyle>;
 export type TextStyleType = StyleConfigType<typeof TextStyle>;
+export type TextContainerStyleType = StyleConfigType<typeof TextContainerStyle>;
 export type ContainerStyleType = StyleConfigType<typeof ContainerStyle>;
+export type ContainerHeaderStyleType = StyleConfigType<
+  typeof ContainerHeaderStyle
+>;
+export type ContainerBodyStyleType = StyleConfigType<typeof ContainerBodyStyle>;
+export type ContainerSiderStyleType = StyleConfigType<
+  typeof ContainerSiderStyle
+>;
+export type ContainerFooterStyleType = StyleConfigType<
+  typeof ContainerFooterStyle
+>;
 export type SliderStyleType = StyleConfigType<typeof SliderStyle>;
 export type RatingStyleType = StyleConfigType<typeof RatingStyle>;
 export type SwitchStyleType = StyleConfigType<typeof SwitchStyle>;
 export type SelectStyleType = StyleConfigType<typeof SelectStyle>;
 export type MultiSelectStyleType = StyleConfigType<typeof MultiSelectStyle>;
+export type ChildrenMultiSelectStyleType = StyleConfigType<
+  typeof ChildrenMultiSelectStyle
+>;
 export type TabContainerStyleType = StyleConfigType<typeof TabContainerStyle>;
+export type TabBodyStyleType = StyleConfigType<typeof TabBodyStyle>;
 export type ModalStyleType = StyleConfigType<typeof ModalStyle>;
 export type CascaderStyleType = StyleConfigType<typeof CascaderStyle>;
 export type CheckboxStyleType = StyleConfigType<typeof CheckboxStyle>;
 export type RadioStyleType = StyleConfigType<typeof RadioStyle>;
 export type SegmentStyleType = StyleConfigType<typeof SegmentStyle>;
+export type StepsStyleType = StyleConfigType<typeof StepsStyle>;
 export type TableStyleType = StyleConfigType<typeof TableStyle>;
+export type TableHeaderStyleType = StyleConfigType<typeof TableHeaderStyle>;
+export type TableToolbarStyleType = StyleConfigType<typeof TableToolbarStyle>;
 export type TableRowStyleType = StyleConfigType<typeof TableRowStyle>;
 export type TableColumnStyleType = StyleConfigType<typeof TableColumnStyle>;
-export type TableColumnLinkStyleType = StyleConfigType<typeof TableColumnLinkStyle>;
+export type TableColumnLinkStyleType = StyleConfigType<
+  typeof TableColumnLinkStyle
+>;
+export type TableSummaryRowStyleType = StyleConfigType<typeof TableSummaryRowStyle>;
 export type FileStyleType = StyleConfigType<typeof FileStyle>;
 export type FileViewerStyleType = StyleConfigType<typeof FileViewerStyle>;
 export type IframeStyleType = StyleConfigType<typeof IframeStyle>;
+export type CustomStyleType = StyleConfigType<typeof CustomStyle>;
 export type DateTimeStyleType = StyleConfigType<typeof DateTimeStyle>;
 export type LinkStyleType = StyleConfigType<typeof LinkStyle>;
 export type DividerStyleType = StyleConfigType<typeof DividerStyle>;
 export type ProgressStyleType = StyleConfigType<typeof ProgressStyle>;
+export type CircleProgressType = StyleConfigType<typeof CircleProgressStyle>;
 export type NavigationStyleType = StyleConfigType<typeof NavigationStyle>;
 export type ImageStyleType = StyleConfigType<typeof ImageStyle>;
+export type AudioStyleType = StyleConfigType<typeof AudioStyle>;
+export type VideoStyleType = StyleConfigType<typeof VideoStyle>;
+export type IconStyleType = StyleConfigType<typeof IconStyle>;
 export type ListViewStyleType = StyleConfigType<typeof ListViewStyle>;
-export type JsonSchemaFormStyleType = StyleConfigType<typeof JsonSchemaFormStyle>;
+export type JsonSchemaFormStyleType = StyleConfigType<
+  typeof JsonSchemaFormStyle
+>;
 export type TreeSelectStyleType = StyleConfigType<typeof TreeSelectStyle>;
 export type DrawerStyleType = StyleConfigType<typeof DrawerStyle>;
 export type JsonEditorStyleType = StyleConfigType<typeof JsonEditorStyle>;
 export type CalendarStyleType = StyleConfigType<typeof CalendarStyle>;
+export type EventModalStyleType = StyleConfigType<typeof EventModalStyle>;
 export type SignatureStyleType = StyleConfigType<typeof SignatureStyle>;
 export type CarouselStyleType = StyleConfigType<typeof CarouselStyle>;
-export type RichTextEditorStyleType = StyleConfigType<typeof RichTextEditorStyle>;
-export type ResponsiveLayoutRowStyleType = StyleConfigType<typeof ResponsiveLayoutRowStyle>;
-export type ResponsiveLayoutColStyleType = StyleConfigType<typeof ResponsiveLayoutColStyle>;
+export type RichTextEditorStyleType = StyleConfigType<
+  typeof RichTextEditorStyle
+>;
+export type ResponsiveLayoutRowStyleType = StyleConfigType<
+  typeof ResponsiveLayoutRowStyle
+>;
+export type ResponsiveLayoutColStyleType = StyleConfigType<
+  typeof ResponsiveLayoutColStyle
+>;
 export type NavLayoutStyleType = StyleConfigType<typeof NavLayoutStyle>;
 export type NavLayoutItemStyleType = StyleConfigType<typeof NavLayoutItemStyle>;
-export type NavLayoutItemHoverStyleType = StyleConfigType<typeof NavLayoutItemHoverStyle>;
-export type NavLayoutItemActiveStyleType = StyleConfigType<typeof NavLayoutItemActiveStyle>;
+export type NavLayoutItemHoverStyleType = StyleConfigType<
+  typeof NavLayoutItemHoverStyle
+>;
+export type NavLayoutItemActiveStyleType = StyleConfigType<
+  typeof NavLayoutItemActiveStyle
+>;
 
 export function widthCalculator(margin: string) {
-  const marginArr = margin?.trim().replace(/\s+/g,' ').split(" ") || "";
+  const marginArr = margin?.trim().replace(/\s+/g, " ").split(" ") || "";
   if (marginArr.length === 1) {
     return `calc(100% - ${
-      parseInt(margin.replace(/[^\d.]/g, "")) * 2 + 
+      parseInt(margin.replace(/[^\d.]/g, "")) * 2 +
       (margin.replace(/[0-9]/g, "") || "px")
     })`;
   } else if (marginArr.length === 2 || marginArr.length === 3) {
     return `calc(100% - ${
       parseInt(marginArr[1].replace(/[^\d.]/g, "")) * 2 +
-      (marginArr[1].replace(/[0-9]/g, "") || 'px')
+      (marginArr[1].replace(/[0-9]/g, "") || "px")
     })`;
   } else {
     return `calc(100% - ${
@@ -1128,10 +2312,10 @@ export function heightCalculator(margin: string) {
   const marginArr = margin?.trim().split(" ") || "";
   if (marginArr.length === 1 || marginArr.length === 2) {
     return `calc(100% - ${
-      parseInt(marginArr[0].replace(/[^\d.]/g, "")) * 2 + 
-      (marginArr[0].replace(/[0-9]/g, "") || 'px')
+      parseInt(marginArr[0].replace(/[^\d.]/g, "")) * 2 +
+      (marginArr[0].replace(/[0-9]/g, "") || "px")
     })`;
-  }else if(marginArr.length >2){
+  } else if (marginArr.length > 2) {
     return `calc(100% - ${
       parseInt(marginArr[0]?.replace(/[^\d.]/g, "") || "0") +
       (marginArr[0]?.replace(/[0-9]/g, "") || "px")
@@ -1149,6 +2333,11 @@ export function marginCalculator(margin: string) {
   } else if (marginArr.length === 2) {
     return parseInt(marginArr[0].replace(/[^\d.]/g, "")) * 2;
   } else {
-    return parseInt(marginArr[0]?.replace(/[^\d.]/g, "") || "0") + parseInt(marginArr[2]?.replace(/[^\d.]/g, "") || "0")
+    return (
+      parseInt(marginArr[0]?.replace(/[^\d.]/g, "") || "0") +
+      parseInt(marginArr[2]?.replace(/[^\d.]/g, "") || "0")
+    );
   }
 }
+
+export type {ThemeDetail};

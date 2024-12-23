@@ -1,5 +1,4 @@
-import { CodeEditorTooltipContainer } from "base/codeEditor/codeEditor";
-import { EditorState, EditorView } from "base/codeEditor/codeMirror";
+import type { EditorState, EditorView } from "base/codeEditor/codeMirror";
 import { iconRegexp, iconWidgetClass } from "base/codeEditor/extensions/iconExtension";
 import { i18nObjs, trans } from "i18n";
 import {
@@ -27,11 +26,12 @@ import {
   useIcon,
   wrapperToControlItem,
 } from "lowcoder-design";
-import { ReactNode, useCallback, useState } from "react";
+import { memo, ReactNode, useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { setFieldsNoTypeCheck } from "util/objectUtils";
 import { StringControl } from "./codeControl";
 import { ControlParams } from "./controlParams";
+import { IconDictionary } from "@lowcoder-ee/constants/iconConstants";
 
 const ButtonWrapper = styled.div`
   width: 100%;
@@ -71,10 +71,11 @@ const Wrapper = styled.div`
   }
 `;
 
-const IconPicker = (props: {
+export const IconPicker = (props: {
   value: string;
   onChange: (value: string) => void;
   label?: ReactNode;
+  IconType?: "OnlyAntd" | "All" | "default" | undefined;
 }) => {
   const icon = useIcon(props.value);
   return (
@@ -82,6 +83,7 @@ const IconPicker = (props: {
       onChange={props.onChange}
       label={props.label}
       searchKeywords={i18nObjs.iconSearchKeywords}
+      IconType={props.IconType}
     >
       <TacoButton style={{ width: "100%" }}>
         {icon ? (
@@ -89,7 +91,7 @@ const IconPicker = (props: {
             <ButtonIconWrapper>{icon.getView()}</ButtonIconWrapper>
             <ButtonText title={icon.title}>{icon.title}</ButtonText>
             <StyledDeleteInputIcon
-              onClick={(e) => {
+              onClick={(e: any) => {
                 props.onChange("");
                 e.stopPropagation();
               }}
@@ -163,7 +165,7 @@ function IconCodeEditor(props: {
         visible={visible}
         setVisible={setVisible}
         trigger="contextMenu"
-        parent={document.querySelector<HTMLElement>(`${CodeEditorTooltipContainer}`)}
+        // parent={document.querySelector<HTMLElement>(`${CodeEditorTooltipContainer}`)}
         searchKeywords={i18nObjs.iconSearchKeywords}
       />
     ),
@@ -207,14 +209,24 @@ type ChangeModeAction = {
   useCodeEditor: boolean;
 };
 
-function IconControlView(props: { value: string }) {
+export const IconControlView = memo((props: { value: string }) => {
   const { value } = props;
   const icon = useIcon(value);
-  if (icon) {
-    return icon.getView();
-  }
-  return <StyledImage src={value} alt="" />;
-}
+
+  return useMemo(() => {
+    if (value && IconDictionary[value] && IconDictionary[value]?.title === icon?.title) {
+      return IconDictionary[value];
+    }
+
+    if (value && icon) {
+      const renderIcon = icon.getView();
+      IconDictionary[value] = renderIcon;
+      return renderIcon;
+    }
+
+    return <StyledImage src={value} alt="" />;
+  }, [icon, value, IconDictionary[value]])
+});
 
 export class IconControl extends AbstractComp<ReactNode, string, Node<ValueAndMsg<string>>> {
   private readonly useCodeEditor: boolean;
@@ -251,7 +263,7 @@ export class IconControl extends AbstractComp<ReactNode, string, Node<ValueAndMs
         { filterText: params.label },
         <Wrapper>
           <SwitchWrapper label={params.label} tooltip={params.tooltip} lastNode={jsContent} />
-          {this.useCodeEditor && <IconCodeEditor codeControl={this.codeControl} params={params} />}
+          {this.useCodeEditor && <IconCodeEditor codeControl={this.codeControl} params={params}/>}
         </Wrapper>
       );
     }
@@ -262,6 +274,7 @@ export class IconControl extends AbstractComp<ReactNode, string, Node<ValueAndMs
             value={this.codeControl.getView()}
             onChange={(x) => this.dispatchChangeValueAction(x)}
             label={params.label}
+            IconType={params.IconType}
           />
         )}
       </ControlPropertyViewWrapper>

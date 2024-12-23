@@ -19,19 +19,19 @@ interface FileParamValue {
 }
 
 export function getFileData(value: FileParamValue | string): File | Buffer | null {
-  if (!value) {
-    return null;
-  }
+  if (!value) return null;
+
   if (typeof value === "string") {
     return Buffer.from(value, "base64");
   }
+
   if (value instanceof Buffer || value instanceof File) {
     return value;
   }
-  const { data = "", name = "file", type } = value || {};
-  if (!data) {
-    return null;
-  }
+
+  const { data, name = "file", type } = value || {};
+  if (!data) return null;
+
   return new File([Buffer.from(data, "base64")], name, { type });
 }
 
@@ -81,12 +81,11 @@ interface NormalizedParams {
   requestBody?: any;
 }
 
-export function extractSecurityParams(config: any, spec: OpenAPI.Document) {
-  if (!config) {
-    return {};
-  }
+export function extractSecurityParams(datasourceConfig: any, spec: OpenAPI.Document) {
+  const config = datasourceConfig.dynamicParamsConfig || {};
   const isOas3Spec = isOas3(spec);
   const authData = extractLevelData(config);
+
   let names: string[] = [];
   if (isOas3Spec) {
     const oas3Spec = spec as OpenAPIV3.Document;
@@ -95,9 +94,35 @@ export function extractSecurityParams(config: any, spec: OpenAPI.Document) {
     const swagger2Spec = spec as OpenAPIV2.Document;
     names = Object.keys(swagger2Spec.securityDefinitions || {});
   }
+
   const authorized = _.pick(authData, names);
-  return { authorized, specSecurity: spec.security };
+
+  // Inject bearer token if available
+  if (config["bearerAuth.value"]) {
+    authorized.bearerAuth = {
+      value: config["bearerAuth.value"],
+    };
+  }
+
+  if (config["apiKeyAuth.value"]) {
+    authorized.apiKeyAuth = {
+      value: config["apiKeyAuth.value"],
+    };
+  }
+
+  let oauthAccessToken = datasourceConfig["OAUTH_ACCESS_TOKEN"];
+  if (oauthAccessToken) {
+    return {
+      authorized: {
+        OAUTH_ACCESS_TOKEN: { value: oauthAccessToken },
+      },
+      specSecurity: spec.security || [],
+    };
+  }
+
+  return { authorized, specSecurity: spec.security || [] };
 }
+
 
 export function normalizeParams(
   params: any,

@@ -1,9 +1,9 @@
 {
   "name": "lowcoder-cli-template-typescript",
-  "version": "0.0.16",
+  "version": "0.0.22",
   "type": "module",
   "scripts": {
-    "start": "vite",
+    "start": "NODE_OPTIONS=--max_old_space_size=6144 vite",
     "build": "lowcoder-cli build",
     "build_publish": "lowcoder-cli build --publish"
   },
@@ -13,12 +13,18 @@
       "hillcharts": {
         "name": "Hillcharts Demo",
         "icon": "./icons/hills.svg",
-        "description": "Hillchart Plugin Demo Component"
+        "description": "Hillchart Plugin Demo Component",
+        "layoutInfo": {
+          "w": 10,
+          "h": 40
+        }
       }
     }
   },
-  "devDependencies": {
+  "dependencies": {
+    "@observablehq/inspector": "^5.0.1",
     "@observablehq/runtime": "^4.8.2",
+    "@observablehq/stdlib": "^5.8.8",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
     "lowcoder-cli": "^0.0.30",
@@ -28,7 +34,7 @@
     "react-dom": "^18.2.0",
     "react-resize-detector": "^7.0.0",
     "typescript": "5.3.3",
-    "vite": "^5.0.10"
+    "vite": "^4.5.5"
   },
   "keywords": [
     "Lowcoder, Component, Template, Plugin, Demonstrator"
